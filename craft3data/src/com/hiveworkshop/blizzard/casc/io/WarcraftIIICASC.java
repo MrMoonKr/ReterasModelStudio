@@ -41,10 +41,10 @@ public class WarcraftIIICASC implements AutoCloseable {
 		 */
 		public List<String> enumerateFiles() throws IOException {
 			final List<PathResult> pathResults = vfs.getAllFiles();
-			final ArrayList<String> filePathStrings = new ArrayList<String>(pathResults.size());
+			final ArrayList<String> filePathStrings = new ArrayList<String>( pathResults.size() );
 
-			for (final PathResult pathResult : pathResults) {
-				filePathStrings.add(pathResult.getPath());
+			for ( final PathResult pathResult : pathResults ) {
+				filePathStrings.add( pathResult.getPath() );
 			}
 
 			return filePathStrings;
@@ -57,12 +57,12 @@ public class WarcraftIIICASC implements AutoCloseable {
 		 * @return True if path represents a file, otherwise false.
 		 * @throws IOException In an exception occurs when resolving files.
 		 */
-		public boolean isFile(final String filePath) throws IOException {
-			final byte[][] pathFragments = VirtualFileSystem.convertFilePath(filePath);
+		public boolean isFile( final String filePath ) throws IOException {
+			final byte[][] pathFragments = VirtualFileSystem.convertFilePath( filePath );
 			try {
-				final PathResult resolveResult = vfs.resolvePath(pathFragments);
+				final PathResult resolveResult = vfs.resolvePath( pathFragments );
 				return resolveResult.isFile();
-			} catch (final FileNotFoundException e) {
+			} catch ( final FileNotFoundException e ) {
 				return false;
 			}
 		}
@@ -74,9 +74,9 @@ public class WarcraftIIICASC implements AutoCloseable {
 		 * @return True if path represents a file inside local storage, otherwise false.
 		 * @throws IOException In an exception occurs when resolving files.
 		 */
-		public boolean isFileAvailable(final String filePath) throws IOException {
-			final byte[][] pathFragments = VirtualFileSystem.convertFilePath(filePath);
-			final PathResult resolveResult = vfs.resolvePath(pathFragments);
+		public boolean isFileAvailable( final String filePath ) throws IOException {
+			final byte[][] pathFragments = VirtualFileSystem.convertFilePath( filePath );
+			final PathResult resolveResult = vfs.resolvePath( pathFragments );
 			return resolveResult.existsInStorage();
 		}
 
@@ -93,12 +93,12 @@ public class WarcraftIIICASC implements AutoCloseable {
 		 * @return True if file is a nested file system, otherwise false.
 		 * @throws IOException In an exception occurs when resolving files.
 		 */
-		public boolean isNestedFileSystem(final String filePath) throws IOException {
-			final byte[][] pathFragments = VirtualFileSystem.convertFilePath(filePath);
+		public boolean isNestedFileSystem( final String filePath ) throws IOException {
+			final byte[][] pathFragments = VirtualFileSystem.convertFilePath( filePath );
 			try {
-				final PathResult resolveResult = vfs.resolvePath(pathFragments);
+				final PathResult resolveResult = vfs.resolvePath( pathFragments );
 				return resolveResult.isTVFS();
-			} catch (final FileNotFoundException e) {
+			} catch ( final FileNotFoundException e ) {
 				return false;
 			}
 		}
@@ -110,17 +110,17 @@ public class WarcraftIIICASC implements AutoCloseable {
 		 * @return Buffer containing file data.
 		 * @throws IOException If an error occurs when reading the file.
 		 */
-		public ByteBuffer readFileData(final String filePath) throws IOException {
-			final byte[][] pathFragments = VirtualFileSystem.convertFilePath(filePath);
-			final PathResult resolveResult = vfs.resolvePath(pathFragments);
+		public ByteBuffer readFileData( final String filePath ) throws IOException {
+			final byte[][] pathFragments = VirtualFileSystem.convertFilePath( filePath );
+			final PathResult resolveResult = vfs.resolvePath( pathFragments );
 
-			if (!resolveResult.isFile()) {
-				throw new FileNotFoundException("the specified file path does not resolve to a file");
-			} else if (!resolveResult.existsInStorage()) {
-				throw new FileNotFoundException("the specified file is not in local storage");
+			if ( !resolveResult.isFile() ) {
+				throw new FileNotFoundException( "the specified file path does not resolve to a file" );
+			} else if ( !resolveResult.existsInStorage() ) {
+				throw new FileNotFoundException( "the specified file is not in local storage" );
 			}
 
-			final ByteBuffer fileBuffer = resolveResult.readFile(null);
+			final ByteBuffer fileBuffer = resolveResult.readFile( null );
 			fileBuffer.flip();
 			return fileBuffer;
 		}
@@ -181,59 +181,64 @@ public class WarcraftIIICASC implements AutoCloseable {
 	 * @param useMemoryMapping If memory mapped IO should be used to read file data.
 	 * @throws IOException If an exception occurs while mounting.
 	 */
-	public WarcraftIIICASC(final Path installFolder, final boolean useMemoryMapping, String product) throws IOException {
-		final Path infoFilePath = installFolder.resolve(Info.BUILD_INFO_FILE_NAME);
-		buildInfo = new Info(ByteBuffer.wrap(Files.readAllBytes(infoFilePath)));
+	public WarcraftIIICASC( final Path installFolder, 
+			final boolean useMemoryMapping, 
+			String product ) throws IOException 
+	{
+		final Path infoFilePath = installFolder.resolve( Info.BUILD_INFO_FILE_NAME );
+		buildInfo = new Info( ByteBuffer.wrap( Files.readAllBytes( infoFilePath ) ) );
 
 		final int recordCount = buildInfo.getRecordCount();
-		if (recordCount < 1) {
-			throw new MalformedCASCStructureException("build info contains no records");
+		if ( recordCount < 1 ) {
+			throw new MalformedCASCStructureException( "build info contains no records" );
 		}
 
 		// resolve the active record
-		final int activeFiledIndex = buildInfo.getFieldIndex("Active");
-		if (activeFiledIndex == -1) {
-			throw new MalformedCASCStructureException("build info contains no active field");
+		final int activeFiledIndex = buildInfo.getFieldIndex( "Active" );
+		if ( activeFiledIndex == -1 ) {
+			throw new MalformedCASCStructureException( "build info contains no active field" );
 		}
-		int productFieldIndex = buildInfo.getFieldIndex("Product");
+		int productFieldIndex = buildInfo.getFieldIndex( "Product" );
 		int recordIndex = 0;
-		for (; recordIndex < recordCount; recordIndex += 1) {
-			if (Integer.parseInt(buildInfo.getField(recordIndex, activeFiledIndex)) == 1) {
-				if(productFieldIndex == -1 || product == null || product.equals(buildInfo.getField(recordIndex, productFieldIndex))) {
+		for ( ; recordIndex < recordCount; recordIndex += 1 ) {
+			if ( Integer.parseInt( buildInfo.getField( recordIndex, activeFiledIndex ) ) == 1 ) {
+				if ( productFieldIndex == -1 || product == null
+						|| product.equals( buildInfo.getField( recordIndex, productFieldIndex ) ) ) {
 					break;
 				}
 			}
 		}
-		if (recordIndex == recordCount) {
-			throw new MalformedCASCStructureException("build info contains no active record");
+		if ( recordIndex == recordCount ) {
+			throw new MalformedCASCStructureException( "build info contains no active record" );
 		}
 		activeInfoRecord = recordIndex;
 
 		// resolve build configuration file
-		final int buildKeyFieldIndex = buildInfo.getFieldIndex("Build Key");
-		if (buildKeyFieldIndex == -1) {
-			throw new MalformedCASCStructureException("build info contains no build key field");
+		final int buildKeyFieldIndex = buildInfo.getFieldIndex( "Build Key" );
+		if ( buildKeyFieldIndex == -1 ) {
+			throw new MalformedCASCStructureException( "build info contains no build key field" );
 		}
-		final String buildKey = buildInfo.getField(activeInfoRecord, buildKeyFieldIndex);
+		final String buildKey = buildInfo.getField( activeInfoRecord, buildKeyFieldIndex );
 
 		// resolve data folder
-		dataPath = installFolder.resolve(WC3_DATA_FOLDER_NAME);
-		if (!Files.isDirectory(dataPath)) {
-			throw new MalformedCASCStructureException("data folder is missing");
+		dataPath = installFolder.resolve( WC3_DATA_FOLDER_NAME );
+		if ( !Files.isDirectory( dataPath ) ) {
+			throw new MalformedCASCStructureException( "data folder is missing" );
 		}
 
 		// resolve build configuration file
-		buildConfiguration = ConfigurationFile.lookupConfigurationFile(dataPath, buildKey);
+		buildConfiguration = ConfigurationFile.lookupConfigurationFile( dataPath, buildKey );
 
 		// mounting local storage
-		localStorage = new Storage(dataPath, false, useMemoryMapping);
+		localStorage = new Storage( dataPath, false, useMemoryMapping );
 
 		// mounting virtual file system
 		VirtualFileSystem vfs = null;
 		try {
-			vfs = new VirtualFileSystem(localStorage, buildConfiguration.getConfiguration());
-		} finally {
-			if (vfs == null) {
+			vfs = new VirtualFileSystem( localStorage, buildConfiguration.getConfiguration() );
+		} 
+		finally {
+			if ( vfs == null ) {
 				// storage must be closed to prevent resource leaks
 				localStorage.close();
 			}
@@ -266,11 +271,11 @@ public class WarcraftIIICASC implements AutoCloseable {
 	 */
 	public String getBranch() throws IOException {
 		// resolve branch
-		final int branchFieldIndex = buildInfo.getFieldIndex("Branch");
-		if (branchFieldIndex == -1) {
-			throw new MalformedCASCStructureException("build info contains no branch field");
+		final int branchFieldIndex = buildInfo.getFieldIndex( "Branch" );
+		if ( branchFieldIndex == -1 ) {
+			throw new MalformedCASCStructureException( "build info contains no branch field" );
 		}
-		return buildInfo.getField(activeInfoRecord, branchFieldIndex);
+		return buildInfo.getField( activeInfoRecord, branchFieldIndex );
 	}
 
 	/**

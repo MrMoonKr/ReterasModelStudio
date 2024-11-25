@@ -827,7 +827,12 @@ public final class MutableObjectData {
 	}
 
 	public enum WorldEditorDataType {
-		UNITS("w3u"), ITEM("w3t"), DESTRUCTIBLES("w3b"), DOODADS("w3d"), ABILITIES("w3a"), BUFFS_EFFECTS("w3h"),
+		UNITS("w3u"), 
+		ITEM("w3t"), 
+		DESTRUCTIBLES("w3b"), 
+		DOODADS("w3d"), 
+		ABILITIES("w3a"), 
+		BUFFS_EFFECTS("w3h"),
 		UPGRADES("w3q");
 
 		private String extension;

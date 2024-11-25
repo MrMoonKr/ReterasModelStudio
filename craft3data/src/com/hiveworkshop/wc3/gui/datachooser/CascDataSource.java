@@ -27,35 +27,36 @@ public class CascDataSource implements DataSource {
 	private List<String> listFile;
 	private Map<String, String> fileAliases;
 
-	public CascDataSource(final String warcraft3InstallPath, final String[] prefixes, Product product) {
+	public CascDataSource( final String warcraft3InstallPath, final String[] prefixes, Product product ) {
 		this.prefixes = prefixes;
-		for (int i = 0; i < (prefixes.length / 2); i++) {
+		for ( int i = 0; i < ( prefixes.length / 2 ); i++ ) {
 			final String temp = prefixes[i];
 			prefixes[i] = prefixes[prefixes.length - i - 1];
 			prefixes[prefixes.length - i - 1] = temp;
 		}
 
 		try {
-			warcraftIIICASC = new WarcraftIIICASC(Paths.get(warcraft3InstallPath), true, product.key);
+			warcraftIIICASC = new WarcraftIIICASC( Paths.get( warcraft3InstallPath ), true, product.key );
 			rootFileSystem = warcraftIIICASC.getRootFileSystem();
 			listFile = rootFileSystem.enumerateFiles();
 			fileAliases = new HashMap<>();
-			if (this.has("filealiases.json")) {
-				try (InputStream stream = this.getResourceAsStream("filealiases.json")) {
-					stream.mark(4);
-					if ('\ufeff' != stream.read()) {
+			if ( this.has( "filealiases.json" ) ) {
+				try ( InputStream stream = this.getResourceAsStream( "filealiases.json" ) ) {
+					stream.mark( 4 );
+					if ( '\ufeff' != stream.read() ) {
 						stream.reset(); // not the BOM marker
 					}
-					final JSONArray jsonObject = new JSONArray(new JSONTokener(stream));
-					for (int i = 0; i < jsonObject.length(); i++) {
-						final JSONObject alias = jsonObject.getJSONObject(i);
-						final String src = alias.getString("src");
-						final String dest = alias.getString("dest");
-						fileAliases.put(src.toLowerCase(Locale.US).replace('/', '\\'),
-								dest.toLowerCase(Locale.US).replace('/', '\\'));
-						if ((src.toLowerCase(Locale.US).contains(".blp")
-								|| dest.toLowerCase(Locale.US).contains(".blp"))
-								&& (!alias.has("assetType") || "Texture".equals(alias.getString("assetType")))) {
+					final JSONArray jsonObject = new JSONArray( new JSONTokener( stream ) );
+					for ( int i = 0; i < jsonObject.length(); i++ ) {
+						final JSONObject alias = jsonObject.getJSONObject( i );
+						final String src = alias.getString( "src" );
+						final String dest = alias.getString( "dest" );
+						fileAliases.put( src.toLowerCase( Locale.US ).replace( '/', '\\' ),
+								dest.toLowerCase( Locale.US ).replace( '/', '\\' ) );
+						if ( ( src.toLowerCase( Locale.US ).contains( ".blp" )
+								|| dest.toLowerCase( Locale.US ).contains( ".blp" ) )
+								&& ( !alias.has( "assetType" )
+										|| "Texture".equals( alias.getString( "assetType" ) ) ) ) {
 							// This case: I saw a texture that resolves in game but was failing in our code
 							// here, because of this entry:
 							// {"src":"Units/Human/WarWagon/SiegeEngine.blp",
@@ -65,149 +66,152 @@ public class CascDataSource implements DataSource {
 							// resolve .DDS when we go to look it up. The actual model is .BLP so maybe
 							// that's how the game does it, but my alias mapping is happening after the
 							// .BLP->.DDS dynamic fix, and not before.
-							fileAliases.put(src.toLowerCase(Locale.US).replace('/', '\\').replace(".blp", ".dds"),
-									dest.toLowerCase(Locale.US).replace('/', '\\').replace(".blp", ".dds"));
+							fileAliases.put(
+									src.toLowerCase( Locale.US ).replace( '/', '\\' ).replace( ".blp", ".dds" ),
+									dest.toLowerCase( Locale.US ).replace( '/', '\\' ).replace( ".blp", ".dds" ) );
 						}
 					}
 				}
 			}
-		} catch (final IOException e) {
-			throw new RuntimeException(e);
+		} 
+		catch ( final IOException e ) {
+			throw new RuntimeException( e );
 		}
 	}
 
 	@Override
-	public InputStream getResourceAsStream(String filepath) {
-		filepath = filepath.toLowerCase(Locale.US).replace('/', '\\').replace(':', '\\');
-		final String resolvedAlias = fileAliases.get(filepath);
-		if (resolvedAlias != null) {
+	public InputStream getResourceAsStream( String filepath ) {
+		filepath = filepath.toLowerCase( Locale.US ).replace( '/', '\\' ).replace( ':', '\\' );
+		final String resolvedAlias = fileAliases.get( filepath );
+		if ( resolvedAlias != null ) {
 			filepath = resolvedAlias;
 		}
-		for (final String prefix : prefixes) {
+		for ( final String prefix : prefixes ) {
 			final String tempFilepath = prefix + "\\" + filepath;
-			final InputStream stream = internalGetResourceAsStream(tempFilepath);
-			if (stream != null) {
+			final InputStream stream = internalGetResourceAsStream( tempFilepath );
+			if ( stream != null ) {
 				return stream;
 			}
 		}
-		return internalGetResourceAsStream(filepath);
+		return internalGetResourceAsStream( filepath );
 	}
 
-	private InputStream internalGetResourceAsStream(final String tempFilepath) {
+	private InputStream internalGetResourceAsStream( final String tempFilepath ) {
 		try {
-			if (rootFileSystem.isFile(tempFilepath) && rootFileSystem.isFileAvailable(tempFilepath)) {
-				final ByteBuffer buffer = rootFileSystem.readFileData(tempFilepath);
-				if (buffer.hasArray()) {
-					return new ByteArrayInputStream(buffer.array());
+			if ( rootFileSystem.isFile( tempFilepath ) && rootFileSystem.isFileAvailable( tempFilepath ) ) {
+				final ByteBuffer buffer = rootFileSystem.readFileData( tempFilepath );
+				if ( buffer.hasArray() ) {
+					return new ByteArrayInputStream( buffer.array() );
 				}
 				final byte[] data = new byte[buffer.remaining()];
 				buffer.clear();
-				buffer.get(data);
-				return new ByteArrayInputStream(data);
+				buffer.get( data );
+				return new ByteArrayInputStream( data );
 			}
-		} catch (final IOException e) {
-			throw new RuntimeException("CASC parser error for: " + tempFilepath, e);
+		} 
+		catch ( final IOException e ) {
+			throw new RuntimeException( "CASC parser error for: " + tempFilepath, e );
 		}
 		return null;
 	}
 
 	@Override
-	public ByteBuffer read(String path) {
-		path = path.toLowerCase(Locale.US).replace('/', '\\').replace(':', '\\');
-		final String resolvedAlias = fileAliases.get(path);
-		if (resolvedAlias != null) {
+	public ByteBuffer read( String path ) {
+		path = path.toLowerCase( Locale.US ).replace( '/', '\\' ).replace( ':', '\\' );
+		final String resolvedAlias = fileAliases.get( path );
+		if ( resolvedAlias != null ) {
 			path = resolvedAlias;
 		}
-		for (final String prefix : prefixes) {
+		for ( final String prefix : prefixes ) {
 			final String tempFilepath = prefix + "\\" + path;
-			final ByteBuffer stream = internalRead(tempFilepath);
-			if (stream != null) {
+			final ByteBuffer stream = internalRead( tempFilepath );
+			if ( stream != null ) {
 				return stream;
 			}
 		}
-		return internalRead(path);
+		return internalRead( path );
 	}
 
-	private ByteBuffer internalRead(final String tempFilepath) {
+	private ByteBuffer internalRead( final String tempFilepath ) {
 		try {
-			if (rootFileSystem.isFile(tempFilepath) && rootFileSystem.isFileAvailable(tempFilepath)) {
-				final ByteBuffer buffer = rootFileSystem.readFileData(tempFilepath);
+			if ( rootFileSystem.isFile( tempFilepath ) && rootFileSystem.isFileAvailable( tempFilepath ) ) {
+				final ByteBuffer buffer = rootFileSystem.readFileData( tempFilepath );
 				return buffer;
 			}
-		} catch (final IOException e) {
-			throw new RuntimeException("CASC parser error for: " + tempFilepath, e);
+		} catch ( final IOException e ) {
+			throw new RuntimeException( "CASC parser error for: " + tempFilepath, e );
 		}
 		return null;
 	}
 
 	@Override
-	public File getFile(String filepath) {
-		filepath = filepath.toLowerCase(Locale.US).replace('/', '\\').replace(':', '\\');
-		final String resolvedAlias = fileAliases.get(filepath);
-		if (resolvedAlias != null) {
+	public File getFile( String filepath ) {
+		filepath = filepath.toLowerCase( Locale.US ).replace( '/', '\\' ).replace( ':', '\\' );
+		final String resolvedAlias = fileAliases.get( filepath );
+		if ( resolvedAlias != null ) {
 			filepath = resolvedAlias;
 		}
-		for (final String prefix : prefixes) {
+		for ( final String prefix : prefixes ) {
 			final String tempFilepath = prefix + "\\" + filepath;
-			final File file = internalGetFile(tempFilepath);
-			if (file != null) {
+			final File file = internalGetFile( tempFilepath );
+			if ( file != null ) {
 				return file;
 			}
 		}
-		return internalGetFile(filepath);
+		return internalGetFile( filepath );
 	}
 
-	private File internalGetFile(final String tempFilepath) {
+	private File internalGetFile( final String tempFilepath ) {
 		try {
-			if (rootFileSystem.isFile(tempFilepath) && rootFileSystem.isFileAvailable(tempFilepath)) {
-				final ByteBuffer buffer = rootFileSystem.readFileData(tempFilepath);
-				String tmpdir = System.getProperty("java.io.tmpdir");
-				if (!tmpdir.endsWith(File.separator)) {
+			if ( rootFileSystem.isFile( tempFilepath ) && rootFileSystem.isFileAvailable( tempFilepath ) ) {
+				final ByteBuffer buffer = rootFileSystem.readFileData( tempFilepath );
+				String tmpdir = System.getProperty( "java.io.tmpdir" );
+				if ( !tmpdir.endsWith( File.separator ) ) {
 					tmpdir += File.separator;
 				}
 				final String tempDir = tmpdir + "MatrixEaterExtract/";
-				final File tempProduct = new File(tempDir + tempFilepath.replace('\\', File.separatorChar));
+				final File tempProduct = new File( tempDir + tempFilepath.replace( '\\', File.separatorChar ) );
 				tempProduct.delete();
 				tempProduct.getParentFile().mkdirs();
-				try (final FileChannel fileChannel = FileChannel.open(tempProduct.toPath(), StandardOpenOption.CREATE,
-						StandardOpenOption.WRITE, StandardOpenOption.READ, StandardOpenOption.TRUNCATE_EXISTING)) {
-					fileChannel.write(buffer);
+				try ( final FileChannel fileChannel = FileChannel.open( tempProduct.toPath(), StandardOpenOption.CREATE,
+						StandardOpenOption.WRITE, StandardOpenOption.READ, StandardOpenOption.TRUNCATE_EXISTING ) ) {
+					fileChannel.write( buffer );
 				}
 				tempProduct.deleteOnExit();
 				return tempProduct;
 			}
-		} catch (final IOException e) {
-			throw new RuntimeException("CASC parser error for: " + tempFilepath, e);
+		} catch ( final IOException e ) {
+			throw new RuntimeException( "CASC parser error for: " + tempFilepath, e );
 		}
 		return null;
 	}
 
 	@Override
-	public boolean has(String filepath) {
-		filepath = filepath.toLowerCase(Locale.US).replace('/', '\\').replace(':', '\\');
-		final String resolvedAlias = fileAliases.get(filepath);
-		if (resolvedAlias != null) {
+	public boolean has( String filepath ) {
+		filepath = filepath.toLowerCase( Locale.US ).replace( '/', '\\' ).replace( ':', '\\' );
+		final String resolvedAlias = fileAliases.get( filepath );
+		if ( resolvedAlias != null ) {
 			filepath = resolvedAlias;
 		}
-		for (final String prefix : prefixes) {
+		for ( final String prefix : prefixes ) {
 			final String tempFilepath = prefix + "\\" + filepath;
 			try {
-				if (rootFileSystem.isFile(tempFilepath)) {
+				if ( rootFileSystem.isFile( tempFilepath ) ) {
 					return true;
 				}
-			} catch (final IOException e) {
-				throw new RuntimeException("CASC parser error for: " + tempFilepath, e);
+			} catch ( final IOException e ) {
+				throw new RuntimeException( "CASC parser error for: " + tempFilepath, e );
 			}
 		}
 		try {
-			return rootFileSystem.isFile(filepath);
-		} catch (final IOException e) {
-			throw new RuntimeException("CASC parser error for: " + filepath, e);
+			return rootFileSystem.isFile( filepath );
+		} catch ( final IOException e ) {
+			throw new RuntimeException( "CASC parser error for: " + filepath, e );
 		}
 	}
 
 	@Override
-	public boolean allowDownstreamCaching(final String filepath) {
+	public boolean allowDownstreamCaching( final String filepath ) {
 		return true;
 	}
 
@@ -222,13 +226,15 @@ public class CascDataSource implements DataSource {
 	}
 
 	public static enum Product {
-		WARCRAFT_III("w3"), WARCRAFT_III_PUBLIC_TEST("w3t");
+
+		WARCRAFT_III( "w3" ), WARCRAFT_III_PUBLIC_TEST( "w3t" );
+
 		private String key;
 
-		private Product(String key) {
+		private Product( String key ) {
 			this.key = key;
 		}
-		
+
 		public String getKey() {
 			return key;
 		}

@@ -1,0 +1,833 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "GLTestMain",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.rms.editor.render3d.GLTestMain",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "Test",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.gui.animedit.mdlvisripoff.Test",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "DataSourceChooserPanel",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.gui.datachooser.DataSourceChooserPanel",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "GetCascLanguageList",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.gui.datachooser.GetCascLanguageList",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "ModelScale",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.gui.modeledit.ModelScale",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.gui.modeledit.util.Main",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "Stupid",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.gui.modelviewer.Stupid",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "ColorChooserIcon",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.gui.util.ColorChooserIcon",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "QuaternionRotation",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.mdl.QuaternionRotation",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "Main(1)",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.mdlx.Main",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "ParseEveryBtTModel",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.mdlx.ParseEveryBtTModel",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "ParseEveryModel",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.mdlx.ParseEveryModel",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "DataTableFileGenerator",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.units.DataTableFileGenerator",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "TestMain",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.user.TestMain",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "WindowsRegistry",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.user.WindowsRegistry",
+            "projectName": "retera-jwc3-craft3data"
+        },
+        {
+            "type": "java",
+            "name": "GoodSLKEdit",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.GoodSLKEdit",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "JWMEFrame",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.JWMEFrame",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "OSWE",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.OSWE",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "TestMain(1)",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.TestMain",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "TestMain2",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.TestMain2",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "TestMain3",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.TestMain3",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "ObjectEditorModelingFrame",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.models.ObjectEditorModelingFrame",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "ObjectEditorFrame",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.objects.ObjectEditorFrame",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "TriggerEditor",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.triggers.TriggerEditor",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "MetaDataToJavaClassConverter",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.wipdesign.MetaDataToJavaClassConverter",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "TechshaperFrame",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.wipdesign.TechshaperFrame",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "FileRetriever",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.wipdesign.test.FileRetriever",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "LSOfFolder",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.wipdesign.test.LSOfFolder",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "MetaDataEnumTypeGenerator",
+            "request": "launch",
+            "mainClass": "com.hiveworkshop.wc3.jworldedit.wipdesign.units.MetaDataEnumTypeGenerator",
+            "projectName": "retera-jwc3-craft3editor"
+        },
+        {
+            "type": "java",
+            "name": "BlpConverterPanel",
+            "request": "launch",
+            "mainClass": "com.matrixeater.blpconv.BlpConverterPanel",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "MaydayColorizer",
+            "request": "launch",
+            "mainClass": "com.matrixeater.colorizer.MaydayColorizer",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "AcqRangeEqualsAtkRange",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.AcqRangeEqualsAtkRange",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "BLPExtractorCompressorWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.BLPExtractorCompressorWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "BLPNulltexGenWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.BLPNulltexGenWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ColorWheel",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ColorWheel",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "CopyTheModels",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.CopyTheModels",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "CountBezierRotations",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.CountBezierRotations",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "Datamod",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.Datamod",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ExampleForGohagga",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ExampleForGohagga",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ExpungeExtensionWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ExpungeExtensionWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ExtractScripts",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ExtractScripts",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FindEverythingWithMissingFrames",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FindEverythingWithMissingFrames",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FindTreeBridgeTool2",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FindTreeBridgeTool2",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FixAllTheModelsInMyMapSir",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FixAllTheModelsInMyMapSir",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FixMyProgramSir",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FixMyProgramSir",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FixMySLK",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FixMySLK",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FixMySLKAgain",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FixMySLKAgain",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FloatHex",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FloatHex",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FtlopMaker",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FtlopMaker",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FtlopMaker2",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FtlopMaker2",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FtlopMaker3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FtlopMaker3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FtlopMaker4",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FtlopMaker4",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "FtlopMaker5",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.FtlopMaker5",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GenModels",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GenModels",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GenModels2",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GenModels2",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GenModels3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GenModels3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GenTextures",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GenTextures",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas11",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas11",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas13",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas13",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas14",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas14",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas15",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas15",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas2",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas2",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas4",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas4",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas5",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas5",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas6",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas6",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas8",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas8",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeDatas9",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeDatas9",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeGoodPaths",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeGoodPaths",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeTheColors",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeTheColors",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeTheHeroSkills",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeTheHeroSkills",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeTheItemAbilities",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeTheItemAbilities",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetMeTheTexts",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetMeTheTexts",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetTheSLK",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GetTheSLK",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GimmeAllRevolution",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GimmeAllRevolution",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GridHotkeyMaker",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GridHotkeyMaker",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GuiTest",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.GuiTest",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "LemmeJustGrabAFile",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.LemmeJustGrabAFile",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ListExtensionWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ListExtensionWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ListFileComparingGuy",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ListFileComparingGuy",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ListFileFinder",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ListFileFinder",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "LookAndFeelDemo",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.LookAndFeelDemo",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "MakeVersions",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.MakeVersions",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "MakeVersionsFilterMode",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.MakeVersionsFilterMode",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ModelChecker",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ModelChecker",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "Mp3ExtractWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.Mp3ExtractWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ORMTest",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ORMTest",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "PrintOutBinary",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.PrintOutBinary",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "QWefasdf",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.QWefasdf",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "RecompileMDXWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.RecompileMDXWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "RegenErrors",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.RegenErrors",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "RegenTexErrors",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.RegenTexErrors",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ReignOfChaosMissionFixerTool",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ReignOfChaosMissionFixerTool",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ReteraMPQBuilder",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.ReteraMPQBuilder",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "RigbornRotator",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.RigbornRotator",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "SquishWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.SquishWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "TGAExtractorCompressorWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.TGAExtractorCompressorWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "Test(1)",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.Test",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "Testest",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.Testest",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "WavExtractWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.WavExtractWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "BlessingWindow",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.blessing.BlessingWindow",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ConvertBLPToTGAWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.converts.ConvertBLPToTGAWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ConvertMDXToMDLWar3",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.converts.ConvertMDXToMDLWar3",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GigapixelHelper",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.converts.GigapixelHelper",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "RecompileModelsDirectory",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.converts.RecompileModelsDirectory",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "GetScriptFile",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.jass.GetScriptFile",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ReturnBugModernizer",
+            "request": "launch",
+            "mainClass": "com.matrixeater.hacks.jass.ReturnBugModernizer",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "AnimationTransfer",
+            "request": "launch",
+            "mainClass": "com.matrixeater.imp.AnimationTransfer",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "OBJImportSettingsPanel",
+            "request": "launch",
+            "mainClass": "com.matrixeater.imp.OBJImportSettingsPanel",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "MDLScript",
+            "request": "launch",
+            "mainClass": "com.matrixeater.src.MDLScript",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "MainFrame",
+            "request": "launch",
+            "mainClass": "com.matrixeater.src.MainFrame",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "HayateMatrixEater",
+            "request": "launch",
+            "mainClass": "com.matrixeaterhayate.HayateMatrixEater",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "War3ModelUnity",
+            "request": "launch",
+            "mainClass": "com.matrixeaterhayate.War3ModelUnity",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "DisplayTest",
+            "request": "launch",
+            "mainClass": "com.owens.oobjloader.lwjgl.DisplayTest",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "ParseTest",
+            "request": "launch",
+            "mainClass": "com.owens.oobjloader.test.ParseTest",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "Main(2)",
+            "request": "launch",
+            "mainClass": "stuff.Main",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
+            "name": "YseraFrame",
+            "request": "launch",
+            "mainClass": "ysera.YseraFrame",
+            "projectName": "retera-jwc3-matrixeater"
+        }
+    ]
+}

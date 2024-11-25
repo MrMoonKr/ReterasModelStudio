@@ -837,14 +837,18 @@ public class MainPanel extends JPanel
 			rootWindow.setWindow(new SplitWindow(true, 0.75f, rootWindow.getWindow(), view));
 		}
 	};
-	AbstractAction openUnitViewerAction = new AbstractAction("Open Unit Browser") {
+
+	/**
+	 * "Unit Browser" 메뉴 클릭 액션 핸들러
+	 */
+	AbstractAction openUnitViewerAction = new AbstractAction( "Open Unit Browser" ) {
 		@Override
-		public void actionPerformed(final ActionEvent e) {
+		public void actionPerformed( final ActionEvent e ) {
 			final UnitEditorTree unitEditorTree = createUnitEditorTree();
-			rootWindow.setWindow(new SplitWindow(true, 0.75f, rootWindow.getWindow(),
-					new View("Unit Browser",
-							new ImageIcon(MainFrame.frame.getIconImage().getScaledInstance(16, 16, Image.SCALE_FAST)),
-							new JScrollPane(unitEditorTree))));
+			rootWindow.setWindow( new SplitWindow( true, 0.75f, rootWindow.getWindow(),
+							new View( "Unit Browser", new ImageIcon(
+									MainFrame.frame.getIconImage().getScaledInstance( 16, 16, Image.SCALE_FAST ) ),
+									new JScrollPane( unitEditorTree ) ) ) );
 		}
 	};
 	AbstractAction openDoodadViewerAction = new AbstractAction("Open Doodad Browser") {

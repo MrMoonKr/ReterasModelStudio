@@ -23,8 +23,14 @@ import com.hiveworkshop.wc3.mpq.MpqCodebase;
 import com.hiveworkshop.wc3.resources.WEString;
 import com.hiveworkshop.wc3.util.IconUtils;
 
+/**
+ * 게임 데이터 베이스
+ */
 public class StandardObjectData {
+
+
 	public static WarcraftData getStandardUnits() {
+
 		final Codebase source = MpqCodebase.get();
 
 		final DataTable profile = new DataTable();

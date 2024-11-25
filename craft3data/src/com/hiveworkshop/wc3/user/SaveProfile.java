@@ -20,7 +20,11 @@ import com.hiveworkshop.wc3.gui.datachooser.FolderDataSourceDescriptor;
 import com.hiveworkshop.wc3.gui.datachooser.MpqDataSourceDescriptor;
 import com.hiveworkshop.wc3.user.WarcraftDataSourceChangeListener.WarcraftDataSourceChangeNotifier;
 
+/**
+ * 프로그램 관련 설정 데이터를 파일로 저장 및 파일로부터 로드하는 클래스
+ */
 public class SaveProfile implements Serializable {
+
 	final static long serialVersionUID = 6L;
 	String lastDirectory;
 	static SaveProfile currentProfile;
@@ -44,41 +48,41 @@ public class SaveProfile implements Serializable {
 	}
 
 	public List<String> getRecent() {
-		if (recent == null) {
+		if ( recent == null ) {
 			recent = new ArrayList<>();
 		}
 		return recent;
 	}
 
 	public List<RecentFetch> getRecentFetches() {
-		if (recentFetches == null) {
+		if ( recentFetches == null ) {
 			recentFetches = new ArrayList<>();
 		}
 		return recentFetches;
 	}
 
-	public void addRecent(final String fp) {
-		if (!getRecent().contains(fp)) {
-			getRecent().add(fp);
+	public void addRecent( final String fp ) {
+		if ( !getRecent().contains( fp ) ) {
+			getRecent().add( fp );
 		} else {
-			getRecent().remove(fp);
-			getRecent().add(fp);
+			getRecent().remove( fp );
+			getRecent().add( fp );
 		}
-		if (recent.size() > 15) {
-			recent.remove(0);
+		if ( recent.size() > 15 ) {
+			recent.remove( 0 );
 		}
 		save();
 	}
 
-	public void addRecentFetch(final RecentFetch fp) {
-		if (!getRecentFetches().contains(fp)) {
-			getRecentFetches().add(fp);
+	public void addRecentFetch( final RecentFetch fp ) {
+		if ( !getRecentFetches().contains( fp ) ) {
+			getRecentFetches().add( fp );
 		} else {
-			getRecentFetches().remove(fp);
-			getRecentFetches().add(fp);
+			getRecentFetches().remove( fp );
+			getRecentFetches().add( fp );
 		}
-		if (recentFetches.size() > 15) {
-			recentFetches.remove(0);
+		if ( recentFetches.size() > 15 ) {
+			recentFetches.remove( 0 );
 		}
 		save();
 	}
@@ -87,13 +91,13 @@ public class SaveProfile implements Serializable {
 		return preferences;
 	}
 
-	public void setPreferences(final ProgramPreferences preferences) {
+	public void setPreferences( final ProgramPreferences preferences ) {
 		this.preferences = preferences;
 	}
 
-	public void setDataSources(final List<DataSourceDescriptor> dataSources) {
+	public void setDataSources( final List<DataSourceDescriptor> dataSources ) {
 		this.dataSources = dataSources;
-		isHD = computeIsHd(dataSources);
+		isHD = computeIsHd( dataSources );
 		save();
 		dataSourceChangeNotifier.dataSourcesChanged();
 	}
@@ -102,8 +106,8 @@ public class SaveProfile implements Serializable {
 		return dataSources;
 	}
 
-	public void addDataSourceChangeListener(final WarcraftDataSourceChangeListener listener) {
-		dataSourceChangeNotifier.subscribe(listener);
+	public void addDataSourceChangeListener( final WarcraftDataSourceChangeListener listener ) {
+		dataSourceChangeNotifier.subscribe( listener );
 	}
 
 	public SaveProfile() {
@@ -114,33 +118,33 @@ public class SaveProfile implements Serializable {
 		return lastDirectory;
 	}
 
-	public void setPath(final String path) {
+	public void setPath( final String path ) {
 		lastDirectory = path;
 		save();
 	}
 
 	public static SaveProfile get() {
-		if (currentProfile == null) {
+		if ( currentProfile == null ) {
 			try {
-				final String homeProfile = System.getProperty("user.home");
+				final String homeProfile = System.getProperty( "user.home" );
 				String profilePath = "\\AppData\\Roaming\\ReteraStudio";
-				if (!System.getProperty("os.name").toLowerCase().contains("win")) {
+				if ( !System.getProperty( "os.name" ).toLowerCase().contains( "win" ) ) {
 					profilePath = "/.reteraStudio";
 				}
-				final File profileDir = new File(homeProfile + profilePath);
-				File profileFile = new File(profileDir.getPath() + "\\user.profile");
-				if (!System.getProperty("os.name").toLowerCase().contains("win")) {
-					profileFile = new File(profileFile.getPath().replace('\\', '/'));
+				final File profileDir = new File( homeProfile + profilePath );
+				File profileFile = new File( profileDir.getPath() + "\\user.profile" );
+				if ( !System.getProperty( "os.name" ).toLowerCase().contains( "win" ) ) {
+					profileFile = new File( profileFile.getPath().replace( '\\', '/' ) );
 				}
-				final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(profileFile));
-				currentProfile = (SaveProfile) ois.readObject();
+				final ObjectInputStream ois = new ObjectInputStream( new FileInputStream( profileFile ) );
+				currentProfile = ( SaveProfile )ois.readObject();
 				currentProfile.preferences.reload();
 				currentProfile.reload();
 				ois.close();
-			} catch (final Exception e) {
+			} catch ( final Exception e ) {
 
 			}
-			if (currentProfile == null) {
+			if ( currentProfile == null ) {
 				currentProfile = new SaveProfile();
 				currentProfile.preferences = new ProgramPreferences();
 			}
@@ -150,70 +154,70 @@ public class SaveProfile implements Serializable {
 
 	private void reload() {
 		dataSourceChangeNotifier = new WarcraftDataSourceChangeNotifier();
-		isHD = computeIsHd(dataSources);
+		isHD = computeIsHd( dataSources );
 	}
 
-	private boolean computeIsHd(final Iterable<DataSourceDescriptor> dataSources) {
+	private boolean computeIsHd( final Iterable<DataSourceDescriptor> dataSources ) {
 		boolean hd = false;
-		for (final DataSourceDescriptor desc : dataSources) {
-			if (desc instanceof FolderDataSourceDescriptor) {
-				if (((FolderDataSourceDescriptor) desc).getFolderPath().contains("_hd.w3mod")) {
+		for ( final DataSourceDescriptor desc : dataSources ) {
+			if ( desc instanceof FolderDataSourceDescriptor ) {
+				if ( ( ( FolderDataSourceDescriptor )desc ).getFolderPath().contains( "_hd.w3mod" ) ) {
 					hd = true;
 				}
-			} else if (desc instanceof CascDataSourceDescriptor) {
-				for (final String prefix : ((CascDataSourceDescriptor) desc).getPrefixes()) {
-					if (prefix.contains("_hd.w3mod")) {
+			} else if ( desc instanceof CascDataSourceDescriptor ) {
+				for ( final String prefix : ( ( CascDataSourceDescriptor )desc ).getPrefixes() ) {
+					if ( prefix.contains( "_hd.w3mod" ) ) {
 						hd = true;
 					}
 				}
-			} else if (desc instanceof MpqDataSourceDescriptor) {
-				if (((MpqDataSourceDescriptor) desc).getMpqFilePath().contains("_hd")) {
+			} else if ( desc instanceof MpqDataSourceDescriptor ) {
+				if ( ( ( MpqDataSourceDescriptor )desc ).getMpqFilePath().contains( "_hd" ) ) {
 					hd = true;
 				}
-			} else if (desc instanceof CompoundDataSourceDescriptor) {
-				hd |= computeIsHd(((CompoundDataSourceDescriptor) desc).getDataSourceDescriptors());
+			} else if ( desc instanceof CompoundDataSourceDescriptor ) {
+				hd |= computeIsHd( ( ( CompoundDataSourceDescriptor )desc ).getDataSourceDescriptors() );
 			}
 		}
 		return hd;
 	}
 
 	public static void save() {
-		if (currentProfile != null) {
-			final String homeProfile = System.getProperty("user.home");
+		if ( currentProfile != null ) {
+			final String homeProfile = System.getProperty( "user.home" );
 			String profilePath = "\\AppData\\Roaming\\ReteraStudio";
-			if (!System.getProperty("os.name").toLowerCase().contains("win")) {
+			if ( !System.getProperty( "os.name" ).toLowerCase().contains( "win" ) ) {
 				profilePath = "/.reteraStudio";
 			}
-			final File profileDir = new File(homeProfile + profilePath);
+			final File profileDir = new File( homeProfile + profilePath );
 			profileDir.mkdirs();
 			// System.out.println(profileDir.mkdirs());
 			// System.out.println(profileDir);
-			File profileFile = new File(profileDir.getPath() + "\\user.profile");
-			if (!System.getProperty("os.name").toLowerCase().contains("win")) {
-				profileFile = new File(profileFile.getPath().replace('\\', '/'));
+			File profileFile = new File( profileDir.getPath() + "\\user.profile" );
+			if ( !System.getProperty( "os.name" ).toLowerCase().contains( "win" ) ) {
+				profileFile = new File( profileFile.getPath().replace( '\\', '/' ) );
 			}
-			System.out.println(profileFile.getPath());
+			System.out.println( profileFile.getPath() );
 			// profileFile.delete();
 
 			try {
 				profileFile.createNewFile();
-				final OutputStream fos = new FileOutputStream(profileFile);
-				final ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(get());
+				final OutputStream fos = new FileOutputStream( profileFile );
+				final ObjectOutputStream oos = new ObjectOutputStream( fos );
+				oos.writeObject( get() );
 				oos.close();
-			} catch (final Exception e) {
+			} catch ( final Exception e ) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static boolean testTargetFolderReadOnly(final String wcDirectory) {
-		final File temp = new File(wcDirectory + "war3.mpq");
-		final File datat = new File(wcDirectory + "/Data");
-		if (!temp.exists() && !datat.exists()) {
-			JOptionPane.showMessageDialog(null,
+	public static boolean testTargetFolderReadOnly( final String wcDirectory ) {
+		final File temp = new File( wcDirectory + "war3.mpq" );
+		final File datat = new File( wcDirectory + "/Data" );
+		if ( !temp.exists() && !datat.exists() ) {
+			JOptionPane.showMessageDialog( null,
 					"Could not find war3.mpq. Please choose a valid Warcraft III installation.",
-					"WARNING: Needs WC3 Installation", JOptionPane.WARNING_MESSAGE);
+					"WARNING: Needs WC3 Installation", JOptionPane.WARNING_MESSAGE );
 			// requestNewWc3Directory();
 			return false;
 		}

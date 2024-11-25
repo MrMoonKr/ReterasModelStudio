@@ -112,7 +112,7 @@ public class Storage implements AutoCloseable {
 	 * @throws IOException If there was a problem loading from the data folder.
 	 */
 	public Storage(final Path dataFolder, final boolean useOld, final boolean useMemoryMapping) throws IOException {
-		folder = dataFolder.resolve(DATA_FOLDER_NAME);
+		this.folder = dataFolder.resolve(DATA_FOLDER_NAME);
 		this.useMemoryMapping = useMemoryMapping;
 
 		final ArrayList<Path> indexFiles = new ArrayList<Path>(INDEX_COUNT * INDEX_COPIES);
