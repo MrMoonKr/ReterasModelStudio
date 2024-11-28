@@ -5,7 +5,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
+//import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import com.hiveworkshop.wc3.units.ModelOptionPanel;
 import com.hiveworkshop.wc3.units.UnitOptionPanel;
 import com.hiveworkshop.wc3.user.SaveProfile;
 import com.owens.oobjloader.builder.Build;
-import com.owens.oobjloader.parser.Parse;
+//import com.owens.oobjloader.parser.Parse;
 
 import de.wc3data.image.TgaFile;
 import net.infonode.gui.laf.InfoNodeLookAndFeel;
@@ -107,15 +107,21 @@ public class MainFrame extends JFrame {
 						// Unfortunately obj convert does popups right now
 						final Build builder = new Build();
 						try {
-							final Parse obj = new Parse( builder, path );
+							//final Parse obj = new Parse( builder, path );
 							final EditableModel mdl = builder.createMDL();
 							final File result = new File( destination );
 							mdl.printTo( result, alwaysUseMinimalMatricesInHD );
 							System.out.println( RETERA_MODEL_STUDIO_VERSION + " converted: " + result );
-						} catch ( final FileNotFoundException e ) {
-							ExceptionPopup.display( e );
-							e.printStackTrace();
-						} catch ( final IOException e ) {
+						} 
+						// catch ( final FileNotFoundException e ) {
+						// 	ExceptionPopup.display( e );
+						// 	e.printStackTrace();
+						// } 
+						// catch ( final IOException e ) {
+						// 	ExceptionPopup.display( e );
+						// 	e.printStackTrace();
+						// }
+						catch ( final Exception e ) {
 							ExceptionPopup.display( e );
 							e.printStackTrace();
 						}
@@ -469,9 +475,17 @@ public class MainFrame extends JFrame {
 		setLocationRelativeTo( null );
 		setVisible( true );
 
-		final Thread currentThread = Thread.currentThread();
-		final UncaughtExceptionHandler defaultExceptionHandler = currentThread.getUncaughtExceptionHandler();
-		currentThread.setDefaultUncaughtExceptionHandler( new UncaughtExceptionHandler() {
+		// final Thread currentThread = Thread.currentThread();
+		// final UncaughtExceptionHandler defaultExceptionHandler = currentThread.getUncaughtExceptionHandler();
+		// currentThread.setDefaultUncaughtExceptionHandler( new UncaughtExceptionHandler() {
+		// 	@Override
+		// 	public void uncaughtException( final Thread t, final Throwable e ) {
+		// 		ExceptionPopup.display( "Uncaught exception on Thread \"" + t.getName() + "\"", e );
+		// 		System.err.println( "Uncaught exception on thread: " + t.getName() );
+		// 		e.printStackTrace();
+		// 	}
+		// } );
+		Thread.setDefaultUncaughtExceptionHandler( new UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException( final Thread t, final Throwable e ) {
 				ExceptionPopup.display( "Uncaught exception on Thread \"" + t.getName() + "\"", e );
