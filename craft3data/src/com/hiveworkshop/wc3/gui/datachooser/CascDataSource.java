@@ -79,6 +79,10 @@ public class CascDataSource implements DataSource {
 		}
 	}
 
+	public ByteBuffer getRootFile() throws IOException {
+		return warcraftIIICASC.getRootFile();
+	}
+
 	@Override
 	public InputStream getResourceAsStream( String filepath ) {
 		filepath = filepath.toLowerCase( Locale.US ).replace( '/', '\\' ).replace( ':', '\\' );

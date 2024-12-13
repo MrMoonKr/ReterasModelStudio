@@ -43,7 +43,7 @@ public final class VirtualFileSystem {
 		 * @param node          Resolved node.
 		 * @param pathFragments Path of resolved node.
 		 */
-		private PathResult(final PathNode node, final byte[][] pathFragments) {
+		private PathResult( final PathNode node, final byte[][] pathFragments ) {
 			this.node = node;
 			this.pathFragments = pathFragments;
 		}
@@ -62,12 +62,12 @@ public final class VirtualFileSystem {
 		public boolean existsInStorage() {
 			boolean exists = true;
 
-			if (isFile()) {
-				final FileNode fileNode = (FileNode) node;
+			if ( isFile() ) {
+				final FileNode fileNode = ( FileNode )node;
 				final int fileReferenceCount = fileNode.getFileReferenceCount();
-				for (int fileReferenceIndex = 0; fileReferenceIndex < fileReferenceCount; fileReferenceIndex += 1) {
-					final StorageReference fileReference = fileNode.getFileReference(fileReferenceIndex);
-					exists = exists && storage.hasBanks(fileReference.getEncodingKey());
+				for ( int fileReferenceIndex = 0; fileReferenceIndex < fileReferenceCount; fileReferenceIndex += 1 ) {
+					final StorageReference fileReference = fileNode.getFileReference( fileReferenceIndex );
+					exists = exists && storage.hasBanks( fileReference.getEncodingKey() );
 				}
 			}
 
@@ -84,12 +84,12 @@ public final class VirtualFileSystem {
 		public long getFileSize() {
 			long size = 0L;
 
-			if (isFile()) {
-				final FileNode fileNode = (FileNode) node;
+			if ( isFile() ) {
+				final FileNode fileNode = ( FileNode )node;
 				final int fileReferenceCount = fileNode.getFileReferenceCount();
-				for (int fileReferenceIndex = 0; fileReferenceIndex < fileReferenceCount; fileReferenceIndex += 1) {
-					final StorageReference fileReference = fileNode.getFileReference(fileReferenceIndex);
-					size = Math.max(size, fileReference.getOffset() + fileReference.getSize());
+				for ( int fileReferenceIndex = 0; fileReferenceIndex < fileReferenceCount; fileReferenceIndex += 1 ) {
+					final StorageReference fileReference = fileNode.getFileReference( fileReferenceIndex );
+					size = Math.max( size, fileReference.getOffset() + fileReference.getSize() );
 				}
 			}
 
@@ -97,7 +97,7 @@ public final class VirtualFileSystem {
 		}
 
 		public String getPath() throws CharacterCodingException {
-			return convertPathFragments(pathFragments);
+			return convertPathFragments( pathFragments );
 		}
 
 		public byte[][] getPathFragments() {
@@ -122,13 +122,13 @@ public final class VirtualFileSystem {
 		 * @return If this node is a TVFS file used by this file system.
 		 */
 		public boolean isTVFS() {
-			if (!isFile()) {
+			if ( !isFile() ) {
 				return false;
 			}
 
-			final FileNode fileNode = (FileNode) node;
-			final StorageReference fileReference = fileNode.getFileReference(0);
-			return tvfsStorageReferences.containsKey(fileReference.getEncodingKey());
+			final FileNode fileNode = ( FileNode )node;
+			final StorageReference fileReference = fileNode.getFileReference( 0 );
+			return tvfsStorageReferences.containsKey( fileReference.getEncodingKey() );
 		}
 
 		/**
@@ -143,46 +143,46 @@ public final class VirtualFileSystem {
 		 * @throws OutOfMemoryError If no buffer is specified and the file is too big
 		 *                          for a single buffer.
 		 */
-		public ByteBuffer readFile(ByteBuffer destBuffer) throws IOException {
-			if (!isFile()) {
-				throw new FileNotFoundException("result is not a file");
+		public ByteBuffer readFile( ByteBuffer destBuffer ) throws IOException {
+			if ( !isFile() ) {
+				throw new FileNotFoundException( "result is not a file" );
 			}
 
 			final long fileSize = getFileSize();
-			if (fileSize > Integer.MAX_VALUE) {
-				throw new OutOfMemoryError("file too big to process");
+			if ( fileSize > Integer.MAX_VALUE ) {
+				throw new OutOfMemoryError( "file too big to process" );
 			}
 
-			if (destBuffer == null) {
-				destBuffer = ByteBuffer.allocate((int) fileSize);
-			} else if (destBuffer.remaining() < fileSize) {
+			if ( destBuffer == null ) {
+				destBuffer = ByteBuffer.allocate( ( int )fileSize );
+			} else if ( destBuffer.remaining() < fileSize ) {
 				throw new BufferOverflowException();
 			}
 
 			final ByteBuffer fileBuffer = destBuffer.slice();
 
-			final FileNode fileNode = (FileNode) node;
+			final FileNode fileNode = ( FileNode )node;
 			final int fileReferenceCount = fileNode.getFileReferenceCount();
-			for (int fileReferenceIndex = 0; fileReferenceIndex < fileReferenceCount; fileReferenceIndex += 1) {
-				final StorageReference fileReference = fileNode.getFileReference(fileReferenceIndex);
+			for ( int fileReferenceIndex = 0; fileReferenceIndex < fileReferenceCount; fileReferenceIndex += 1 ) {
+				final StorageReference fileReference = fileNode.getFileReference( fileReferenceIndex );
 
 				final long logicalSize = fileReference.getSize();
-				if (logicalSize != fileReference.getActualSize()) {
-					throw new MalformedCASCStructureException("inconsistent size");
+				if ( logicalSize != fileReference.getActualSize() ) {
+					throw new MalformedCASCStructureException( "inconsistent size" );
 				}
 				final long logicalOffset = fileReference.getOffset();
 
-				final BankStream bankStream = storage.getBanks(fileReference.getEncodingKey());
+				final BankStream bankStream = storage.getBanks( fileReference.getEncodingKey() );
 				// TODO test if compressed and logical sizes match stored sizes.
 
-				fileBuffer.limit((int) (logicalOffset + logicalSize));
-				fileBuffer.position((int) logicalOffset);
-				while (bankStream.hasNextBank()) {
-					bankStream.getBank(fileBuffer);
+				fileBuffer.limit( ( int )( logicalOffset + logicalSize ) );
+				fileBuffer.position( ( int )logicalOffset );
+				while ( bankStream.hasNextBank() ) {
+					bankStream.getBank( fileBuffer );
 				}
 			}
 
-			destBuffer.position(destBuffer.position() + (int) fileSize);
+			destBuffer.position( destBuffer.position() + ( int )fileSize );
 			return destBuffer;
 		}
 	}
@@ -200,7 +200,7 @@ public final class VirtualFileSystem {
 	/**
 	 * Character encoding used internally by file paths.
 	 */
-	public static final Charset PATH_ENCODING = Charset.forName("UTF8");
+	public static final Charset PATH_ENCODING = Charset.forName( "UTF8" );
 
 	/**
 	 * Path separator used by path strings.
@@ -222,22 +222,23 @@ public final class VirtualFileSystem {
 	 * @param node           Node which is being compared.
 	 * @return Similar to standard comparator value (see above).
 	 */
-	private static int compareNodePathFragments(final byte[][] pathFragments, final int fragmentIndex,
-			final int fragmentOffset, final PathNode node) {
+	private static int compareNodePathFragments( final byte[][] pathFragments, final int fragmentIndex,
+			final int fragmentOffset, final PathNode node ) {
 		final int nodeFragmentCount = node.getPathFragmentCount();
-		if (nodeFragmentCount == 0) {
+		if ( nodeFragmentCount == 0 ) {
 			// nodes without fragments have no path fragment presence so always match
 			return 0;
 		}
 
-		final byte[] nodeFragment = node.getFragment(0);
+		final byte[] nodeFragment = node.getFragment( 0 );
 		final byte[] fragment = pathFragments[fragmentIndex];
-		if ((nodeFragment.length == 0) && ((fragment.length - fragmentOffset) > 0)) {
+		if ( ( nodeFragment.length == 0 ) && ( ( fragment.length - fragmentOffset ) > 0 ) ) {
 			// node with termination fragment are always before all other child nodes
 			return 1;
 		}
-		return ReteraCASCUtils.arraysCompareUnsigned(fragment, fragmentOffset,
-				Math.min(fragmentOffset + nodeFragment.length, fragment.length), nodeFragment, 0, nodeFragment.length);
+		return ReteraCASCUtils.arraysCompareUnsigned( fragment, fragmentOffset,
+				Math.min( fragmentOffset + nodeFragment.length, fragment.length ), nodeFragment, 0,
+				nodeFragment.length );
 	}
 
 	/**
@@ -248,23 +249,23 @@ public final class VirtualFileSystem {
 	 * @throws CharacterCodingException If the path string cannot be encoded into
 	 *                                  fragments.
 	 */
-	public static byte[][] convertFilePath(final String filePath) throws CharacterCodingException {
-		final String[] fragmentStrings = filePath.toLowerCase(Locale.ROOT).split("\\" + PATH_SEPERATOR);
-		final byte[][] pathFragments = new byte[fragmentStrings.length][]; 
+	public static byte[][] convertFilePath( final String filePath ) throws CharacterCodingException {
+		final String[] fragmentStrings = filePath.toLowerCase( Locale.ROOT ).split( "\\" + PATH_SEPERATOR );
+		final byte[][] pathFragments = new byte[fragmentStrings.length][];
 
 		final CharsetEncoder encoder = PATH_ENCODING.newEncoder();
-		encoder.onMalformedInput(CodingErrorAction.REPORT);
-		encoder.onUnmappableCharacter(CodingErrorAction.REPORT);
-		for (int index = 0; index < fragmentStrings.length; index += 1) {
-			final ByteBuffer fragmentBuffer = encoder.encode(CharBuffer.wrap(fragmentStrings[index]));
-			if (fragmentBuffer.hasArray() && (fragmentBuffer.limit() == fragmentBuffer.capacity())
-					&& (fragmentBuffer.position() == 0)) {
+		encoder.onMalformedInput( CodingErrorAction.REPORT );
+		encoder.onUnmappableCharacter( CodingErrorAction.REPORT );
+		for ( int index = 0; index < fragmentStrings.length; index += 1 ) {
+			final ByteBuffer fragmentBuffer = encoder.encode( CharBuffer.wrap( fragmentStrings[index] ) );
+			if ( fragmentBuffer.hasArray() && ( fragmentBuffer.limit() == fragmentBuffer.capacity() )
+					&& ( fragmentBuffer.position() == 0 ) ) {
 				// can use underlying array
 				pathFragments[index] = fragmentBuffer.array();
 			} else {
 				// copy into array
 				final byte[] pathFragment = new byte[fragmentBuffer.remaining()];
-				fragmentBuffer.get(pathFragment);
+				fragmentBuffer.get( pathFragment );
 				pathFragments[index] = pathFragment;
 			}
 		}
@@ -280,18 +281,18 @@ public final class VirtualFileSystem {
 	 * @throws CharacterCodingException If the path fragments cannot be decoded into
 	 *                                  a valid String.
 	 */
-	public static String convertPathFragments(final byte[][] pathFragments) throws CharacterCodingException {
+	public static String convertPathFragments( final byte[][] pathFragments ) throws CharacterCodingException {
 		final String[] fragmentStrings = new String[pathFragments.length];
 
 		final CharsetDecoder decoder = PATH_ENCODING.newDecoder();
-		decoder.onMalformedInput(CodingErrorAction.REPORT);
-		decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+		decoder.onMalformedInput( CodingErrorAction.REPORT );
+		decoder.onUnmappableCharacter( CodingErrorAction.REPORT );
 
-		for (int index = 0; index < fragmentStrings.length; index += 1) {
-			fragmentStrings[index] = decoder.decode(ByteBuffer.wrap(pathFragments[index])).toString();
+		for ( int index = 0; index < fragmentStrings.length; index += 1 ) {
+			fragmentStrings[index] = decoder.decode( ByteBuffer.wrap( pathFragments[index] ) ).toString();
 		}
 
-		return String.join(PATH_SEPERATOR, fragmentStrings);
+		return String.join( PATH_SEPERATOR, fragmentStrings );
 	}
 
 	/**
@@ -303,30 +304,30 @@ public final class VirtualFileSystem {
 	 * @param node           Node which is being tested.
 	 * @return True if the node is contained in the path fragments, otherwise false.
 	 */
-	private static boolean equalNodePathFragments(final byte[][] pathFragments, final int fragmentIndex,
-			int fragmentOffset, final PathNode node) {
+	private static boolean equalNodePathFragments( final byte[][] pathFragments, final int fragmentIndex,
+			int fragmentOffset, final PathNode node ) {
 		final int nodeFragmentCount = node.getPathFragmentCount();
-		if (nodeFragmentCount == 0) {
+		if ( nodeFragmentCount == 0 ) {
 			// nodes without fragments have no path fragment presence so always match
 			return true;
 		}
 
-		if ((nodeFragmentCount == 1) && (node.getFragment(0).length == 0)) {
+		if ( ( nodeFragmentCount == 1 ) && ( node.getFragment( 0 ).length == 0 ) ) {
 			// node with termination fragment
 			return fragmentOffset == pathFragments[fragmentIndex].length;
-		} else if (pathFragments.length < (fragmentIndex + nodeFragmentCount)) {
+		} else if ( pathFragments.length < ( fragmentIndex + nodeFragmentCount ) ) {
 			// fragment too short
 			return false;
 		}
 
 		boolean result = true;
 		int nodeFragmentIndex = 0;
-		while (result && (nodeFragmentIndex < nodeFragmentCount)) {
+		while ( result && ( nodeFragmentIndex < nodeFragmentCount ) ) {
 			final byte[] fragment = pathFragments[fragmentIndex + nodeFragmentIndex];
-			final byte[] nodeFragment = node.getFragment(nodeFragmentIndex);
-			result = result && ReteraCASCUtils.arraysEquals(fragment, fragmentOffset,
-					Math.min(fragmentOffset + nodeFragment.length, fragment.length), nodeFragment, 0,
-					nodeFragment.length);
+			final byte[] nodeFragment = node.getFragment( nodeFragmentIndex );
+			result = result && ReteraCASCUtils.arraysEquals( fragment, fragmentOffset,
+					Math.min( fragmentOffset + nodeFragment.length, fragment.length ), nodeFragment, 0,
+					nodeFragment.length );
 			fragmentOffset = 0;
 			nodeFragmentIndex += 1;
 		}
@@ -363,6 +364,8 @@ public final class VirtualFileSystem {
 	 */
 	private final TreeMap<Key, com.hiveworkshop.blizzard.casc.StorageReference> tvfsStorageReferences = new TreeMap<>();
 
+	private final Map<String, String> buildConfiguration;
+
 	/**
 	 * Construct a TVFS file system from a CASC local storage and build
 	 * configuration.
@@ -371,24 +374,31 @@ public final class VirtualFileSystem {
 	 * @param buildConfiguration Build configuration of CASC archive.
 	 * @throws IOException If an exception occurs when loading the file system.
 	 */
-	public VirtualFileSystem(final Storage storage, final Map<String, String> buildConfiguration) throws IOException {
+	public VirtualFileSystem( final Storage storage, final Map<String, String> buildConfiguration ) throws IOException {
 		this.storage = storage;
+		this.buildConfiguration = buildConfiguration;
 
 		int vfsNumber = 0;
 		String configurationKey;
-		while (buildConfiguration
-				.containsKey(configurationKey = CONFIGURATION_KEY_PREFIX + Integer.toUnsignedString(++vfsNumber))) {
+		while ( buildConfiguration.containsKey(
+				configurationKey = CONFIGURATION_KEY_PREFIX + Integer.toUnsignedString( ++vfsNumber ) ) ) {
 			final com.hiveworkshop.blizzard.casc.StorageReference storageReference = new com.hiveworkshop.blizzard.casc.StorageReference(
-					configurationKey, buildConfiguration);
-			tvfsStorageReferences.put(storageReference.getEncodingKey(), storageReference);
+					configurationKey, buildConfiguration );
+			tvfsStorageReferences.put( storageReference.getEncodingKey(), storageReference );
 		}
 
 		final com.hiveworkshop.blizzard.casc.StorageReference rootReference = new com.hiveworkshop.blizzard.casc.StorageReference(
-				CONFIGURATION_KEY_PREFIX + ROOT_KEY, buildConfiguration);
-		final ByteBuffer rootBuffer = fetchStoredBuffer(rootReference);
-		tvfsRoot = decoder.loadFile(rootBuffer);
+				CONFIGURATION_KEY_PREFIX + ROOT_KEY, buildConfiguration );
+		final ByteBuffer rootBuffer = fetchStoredBuffer( rootReference );
+		tvfsRoot = decoder.loadFile( rootBuffer );
 
-		tvfsCache.put(rootReference.getEncodingKey(), tvfsRoot);
+		tvfsCache.put( rootReference.getEncodingKey(), tvfsRoot );
+	}
+
+	public ByteBuffer fetchRootFile() throws IOException {
+		final com.hiveworkshop.blizzard.casc.StorageReference rootReference = new com.hiveworkshop.blizzard.casc.StorageReference(
+				CONFIGURATION_KEY_PREFIX + ROOT_KEY, this.buildConfiguration );
+		return fetchStoredBuffer( rootReference );
 	}
 
 	/**
@@ -398,25 +408,26 @@ public final class VirtualFileSystem {
 	 * @return Data buffer containing refered content.
 	 * @throws IOException If an exception occurs when fetching the data buffer.
 	 */
-	private ByteBuffer fetchStoredBuffer(final com.hiveworkshop.blizzard.casc.StorageReference storageReference)
+	private ByteBuffer fetchStoredBuffer( final com.hiveworkshop.blizzard.casc.StorageReference storageReference )
 			throws IOException {
 		final long size = storageReference.getSize();
-		if (size > Integer.MAX_VALUE) {
-			throw new MalformedCASCStructureException("stored data too large to process");
+		if ( size > Integer.MAX_VALUE ) {
+			throw new MalformedCASCStructureException( "stored data too large to process" );
 		}
 
-		final BankStream bankStream = storage.getBanks(storageReference.getEncodingKey());
-		final ByteBuffer storedBuffer = ByteBuffer.allocate((int) size);
+		final BankStream bankStream = storage.getBanks( storageReference.getEncodingKey() );
+		final ByteBuffer storedBuffer = ByteBuffer.allocate( ( int )size );
 		try {
-			while (bankStream.hasNextBank()) {
-				bankStream.getBank(storedBuffer);
+			while ( bankStream.hasNextBank() ) {
+				bankStream.getBank( storedBuffer );
 			}
-		} catch (final BufferOverflowException e) {
-			throw new MalformedCASCStructureException("stored data is bigger than expected");
+		} 
+		catch ( final BufferOverflowException e ) {
+			throw new MalformedCASCStructureException( "stored data is bigger than expected" );
 		}
 
-		if (storedBuffer.hasRemaining()) {
-			throw new MalformedCASCStructureException("stored data is smaller than expected");
+		if ( storedBuffer.hasRemaining() ) {
+			throw new MalformedCASCStructureException( "stored data is smaller than expected" );
 		}
 
 		storedBuffer.rewind();
@@ -434,9 +445,9 @@ public final class VirtualFileSystem {
 		final ArrayList<PathResult> pathStringList = new ArrayList<PathResult>();
 
 		final int rootCount = tvfsRoot.getRootNodeCount();
-		for (int rootIndex = 0; rootIndex < rootCount; rootIndex += 1) {
-			final PathNode root = tvfsRoot.getRootNode(rootIndex);
-			recursiveFilePathRetrieve(new byte[1][0], pathStringList, root);
+		for ( int rootIndex = 0; rootIndex < rootCount; rootIndex += 1 ) {
+			final PathNode root = tvfsRoot.getRootNode( rootIndex );
+			recursiveFilePathRetrieve( new byte[1][0], pathStringList, root );
 		}
 
 		return pathStringList;
@@ -451,76 +462,76 @@ public final class VirtualFileSystem {
 	 * @param currentNode         The child node to process.
 	 * @throws IOException If an exception occurs when processing the node.
 	 */
-	private void recursiveFilePathRetrieve(final byte[][] parentPathFragments, final ArrayList<PathResult> resultList,
-			final PathNode currentNode) throws IOException {
+	private void recursiveFilePathRetrieve( final byte[][] parentPathFragments, final ArrayList<PathResult> resultList,
+			final PathNode currentNode ) throws IOException {
 		byte[][] currentPathFragments = parentPathFragments;
 
 		// process path fragments
 		final int fragmentCount = currentNode.getPathFragmentCount();
-		if (fragmentCount > 0) {
+		if ( fragmentCount > 0 ) {
 			int fragmentIndex = 0;
-			final byte[] fragment = currentNode.getFragment(fragmentIndex++);
+			final byte[] fragment = currentNode.getFragment( fragmentIndex++ );
 
 			// expand path fragment array
 			int basePathFragmentsIndex = currentPathFragments.length;
-			if ((fragmentCount > 1) || (fragment.length > 0)) {
+			if ( ( fragmentCount > 1 ) || ( fragment.length > 0 ) ) {
 				// first fragment of the node gets merged with last path fragment
 				basePathFragmentsIndex -= 1;
 			}
-			currentPathFragments = Arrays.copyOf(currentPathFragments, basePathFragmentsIndex + fragmentCount);
+			currentPathFragments = Arrays.copyOf( currentPathFragments, basePathFragmentsIndex + fragmentCount );
 
 			// merge fragment
 			final byte[] sourceFragment = currentPathFragments[basePathFragmentsIndex];
 			byte[] joinedFragment = fragment;
-			if (sourceFragment != null) {
+			if ( sourceFragment != null ) {
 				joinedFragment = sourceFragment;
-				if (fragment.length != 0) {
+				if ( fragment.length != 0 ) {
 					final int joinOffset = sourceFragment.length;
-					joinedFragment = Arrays.copyOf(sourceFragment, joinOffset + fragment.length);
-					System.arraycopy(fragment, 0, joinedFragment, joinOffset, fragment.length);
+					joinedFragment = Arrays.copyOf( sourceFragment, joinOffset + fragment.length );
+					System.arraycopy( fragment, 0, joinedFragment, joinOffset, fragment.length );
 				}
 			}
 
 			// append path fragments
 			currentPathFragments[basePathFragmentsIndex] = joinedFragment;
-			for (; fragmentIndex < fragmentCount; fragmentIndex += 1) {
-				currentPathFragments[basePathFragmentsIndex + fragmentIndex] = currentNode.getFragment(fragmentIndex);
+			for ( ; fragmentIndex < fragmentCount; fragmentIndex += 1 ) {
+				currentPathFragments[basePathFragmentsIndex + fragmentIndex] = currentNode.getFragment( fragmentIndex );
 			}
 		}
 
-		if (currentNode instanceof PrefixNode) {
-			final PrefixNode prefixNode = (PrefixNode) currentNode;
+		if ( currentNode instanceof PrefixNode ) {
+			final PrefixNode prefixNode = ( PrefixNode )currentNode;
 
 			final int childCount = prefixNode.getNodeCount();
-			for (int index = 0; index < childCount; index += 1) {
-				recursiveFilePathRetrieve(currentPathFragments, resultList, prefixNode.getNode(index));
+			for ( int index = 0; index < childCount; index += 1 ) {
+				recursiveFilePathRetrieve( currentPathFragments, resultList, prefixNode.getNode( index ) );
 			}
-		} else if (currentNode instanceof FileNode) {
-			final FileNode fileNode = (FileNode) currentNode;
+		} else if ( currentNode instanceof FileNode ) {
+			final FileNode fileNode = ( FileNode )currentNode;
 
 			final int fileReferenceCount = fileNode.getFileReferenceCount();
-			if (fileReferenceCount == 1) {
+			if ( fileReferenceCount == 1 ) {
 				// check if nested VFS
-				final Key encodingKey = fileNode.getFileReference(0).getEncodingKey();
-				final TVFSFile tvfsFile = resolveTVFS(encodingKey);
+				final Key encodingKey = fileNode.getFileReference( 0 ).getEncodingKey();
+				final TVFSFile tvfsFile = resolveTVFS( encodingKey );
 
-				if (tvfsFile != null) {
+				if ( tvfsFile != null ) {
 					// file is also a folder
-					final byte[][] folderPathFragments = Arrays.copyOf(currentPathFragments,
-							currentPathFragments.length + 1);
+					final byte[][] folderPathFragments = Arrays.copyOf( currentPathFragments,
+							currentPathFragments.length + 1 );
 					folderPathFragments[currentPathFragments.length] = new byte[0];
 
 					final int rootCount = tvfsFile.getRootNodeCount();
-					for (int rootIndex = 0; rootIndex < rootCount; rootIndex += 1) {
-						final PathNode root = tvfsFile.getRootNode(rootIndex);
-						recursiveFilePathRetrieve(folderPathFragments, resultList, root);
+					for ( int rootIndex = 0; rootIndex < rootCount; rootIndex += 1 ) {
+						final PathNode root = tvfsFile.getRootNode( rootIndex );
+						recursiveFilePathRetrieve( folderPathFragments, resultList, root );
 					}
 				}
 
-				resultList.add(new PathResult(currentNode, currentPathFragments));
+				resultList.add( new PathResult( currentNode, currentPathFragments ) );
 			}
 		} else {
-			throw new IllegalArgumentException("unsupported node type");
+			throw new IllegalArgumentException( "unsupported node type" );
 		}
 	}
 
@@ -535,18 +546,18 @@ public final class VirtualFileSystem {
 	 * @return Resolved file node.
 	 * @throws IOException If an exception occurs when testing the node.
 	 */
-	private FileNode recursiveResolvePathFragments(final byte[][] pathFragments, int fragmentIndex, int fragmentOffset,
-			final PathNode node) throws IOException {
-		if (!equalNodePathFragments(pathFragments, fragmentIndex, fragmentOffset, node)) {
+	private FileNode recursiveResolvePathFragments( final byte[][] pathFragments, int fragmentIndex, int fragmentOffset,
+			final PathNode node ) throws IOException {
+		if ( !equalNodePathFragments( pathFragments, fragmentIndex, fragmentOffset, node ) ) {
 			// node not on path
 			return null;
 		}
 
 		// advance fragment position
 		final int nodeFragmentCount = node.getPathFragmentCount();
-		if (nodeFragmentCount == 1) {
-			final byte[] nodeFragment = node.getFragment(0);
-			if (nodeFragment.length == 0) {
+		if ( nodeFragmentCount == 1 ) {
+			final byte[] nodeFragment = node.getFragment( 0 );
+			if ( nodeFragment.length == 0 ) {
 				// node with termination fragment
 				fragmentIndex += 1;
 				fragmentOffset = 0;
@@ -555,66 +566,66 @@ public final class VirtualFileSystem {
 				fragmentOffset += nodeFragment.length;
 			}
 
-		} else if (nodeFragmentCount > 1) {
+		} else if ( nodeFragmentCount > 1 ) {
 			// node which completes 1 or more fragments.
 			fragmentIndex += nodeFragmentCount - 1;
-			fragmentOffset = node.getFragment(nodeFragmentCount - 1).length;
+			fragmentOffset = node.getFragment( nodeFragmentCount - 1 ).length;
 		}
 
 		// process node
-		if (node instanceof PrefixNode) {
+		if ( node instanceof PrefixNode ) {
 			// apply binary search to prefix node to find next node
-			final PrefixNode prefixNode = (PrefixNode) node;
+			final PrefixNode prefixNode = ( PrefixNode )node;
 			final int childCount = prefixNode.getNodeCount();
 
 			int low = 0;
 			int high = childCount - 1;
-			while (low <= high) {
-				final int middle = (low + high) / 2;
-				final PathNode searchNode = prefixNode.getNode(middle);
-				final int result = compareNodePathFragments(pathFragments, fragmentIndex, fragmentOffset, searchNode);
+			while ( low <= high ) {
+				final int middle = ( low + high ) / 2;
+				final PathNode searchNode = prefixNode.getNode( middle );
+				final int result = compareNodePathFragments( pathFragments, fragmentIndex, fragmentOffset, searchNode );
 
-				if (result == 0) {
+				if ( result == 0 ) {
 					// possible match
-					return recursiveResolvePathFragments(pathFragments, fragmentIndex, fragmentOffset, searchNode);
-				} else if (result < 0) {
+					return recursiveResolvePathFragments( pathFragments, fragmentIndex, fragmentOffset, searchNode );
+				} else if ( result < 0 ) {
 					high = middle - 1;
 				} else {
 					low = middle + 1;
 				}
 			}
 
-		} else if (node instanceof FileNode) {
-			final FileNode fileNode = (FileNode) node;
+		} else if ( node instanceof FileNode ) {
+			final FileNode fileNode = ( FileNode )node;
 
-			if ((fragmentIndex == (pathFragments.length - 1))
-					&& (fragmentOffset == pathFragments[pathFragments.length - 1].length)) {
+			if ( ( fragmentIndex == ( pathFragments.length - 1 ) )
+					&& ( fragmentOffset == pathFragments[pathFragments.length - 1].length ) ) {
 				// file found
 				return fileNode;
-			} else if (fragmentOffset == pathFragments[fragmentIndex].length) {
+			} else if ( fragmentOffset == pathFragments[fragmentIndex].length ) {
 				// nested TVFS file
 				final int fileReferenceCount = fileNode.getFileReferenceCount();
-				if (fileReferenceCount == 1) {
+				if ( fileReferenceCount == 1 ) {
 					// check if nested VFS
-					final Key encodingKey = fileNode.getFileReference(0).getEncodingKey();
-					final TVFSFile tvfsFile = resolveTVFS(encodingKey);
+					final Key encodingKey = fileNode.getFileReference( 0 ).getEncodingKey();
+					final TVFSFile tvfsFile = resolveTVFS( encodingKey );
 
-					if (tvfsFile != null) {
+					if ( tvfsFile != null ) {
 						// TVFS file to recursively resolve
-						if (tvfsFile.getRootNodeCount() != 1) {
-							throw new MalformedCASCStructureException("logic only defined for 1 TVFS root node");
+						if ( tvfsFile.getRootNodeCount() != 1 ) {
+							throw new MalformedCASCStructureException( "logic only defined for 1 TVFS root node" );
 						}
 
 						fragmentIndex += 1;
 						fragmentOffset = 0;
-						return recursiveResolvePathFragments(pathFragments, fragmentIndex, fragmentOffset,
-								tvfsFile.getRootNode(0));
+						return recursiveResolvePathFragments( pathFragments, fragmentIndex, fragmentOffset,
+								tvfsFile.getRootNode( 0 ) );
 					}
 				}
 			}
 
 		} else {
-			throw new IllegalArgumentException("unsupported node type");
+			throw new IllegalArgumentException( "unsupported node type" );
 		}
 
 		// file not found
@@ -632,21 +643,21 @@ public final class VirtualFileSystem {
 	 *                               fragments.
 	 *
 	 */
-	public PathResult resolvePath(final byte[][] pathFragments) throws IOException {
-		if (pathFragments.length == 0) {
-			throw new IllegalArgumentException("pathFragments.length must be greater than 0");
+	public PathResult resolvePath( final byte[][] pathFragments ) throws IOException {
+		if ( pathFragments.length == 0 ) {
+			throw new IllegalArgumentException( "pathFragments.length must be greater than 0" );
 		}
 
-		if (tvfsRoot.getRootNodeCount() != 1) {
-			throw new MalformedCASCStructureException("logic only defined for 1 root node");
+		if ( tvfsRoot.getRootNodeCount() != 1 ) {
+			throw new MalformedCASCStructureException( "logic only defined for 1 root node" );
 		}
 
-		final FileNode result = recursiveResolvePathFragments(pathFragments, 0, 0, tvfsRoot.getRootNode(0));
-		if (result == null) {
-			throw new FileNotFoundException("path not in storage");
+		final FileNode result = recursiveResolvePathFragments( pathFragments, 0, 0, tvfsRoot.getRootNode( 0 ) );
+		if ( result == null ) {
+			throw new FileNotFoundException( "path not in storage" );
 		}
 
-		return new PathResult(result, pathFragments);
+		return new PathResult( result, pathFragments );
 	}
 
 	/**
@@ -660,19 +671,20 @@ public final class VirtualFileSystem {
 	 *         file of this file system.
 	 * @throws IOException If an error occurs when resolving the TVFS file.
 	 */
-	private TVFSFile resolveTVFS(final Key encodingKey) throws IOException {
+	private TVFSFile resolveTVFS( final Key encodingKey ) throws IOException {
 		TVFSFile tvfsFile = null;
-		final com.hiveworkshop.blizzard.casc.StorageReference storageReference = tvfsStorageReferences.get(encodingKey);
-		if (storageReference != null) {
+		final com.hiveworkshop.blizzard.casc.StorageReference storageReference = tvfsStorageReferences
+				.get( encodingKey );
+		if ( storageReference != null ) {
 			// is a TVFS file of this file system
-			synchronized (this) {
-				tvfsFile = tvfsCache.get(encodingKey);
-				if (tvfsFile == null) {
+			synchronized ( this ) {
+				tvfsFile = tvfsCache.get( encodingKey );
+				if ( tvfsFile == null ) {
 					// decode TVFS from storage
-					final ByteBuffer rootBuffer = fetchStoredBuffer(storageReference);
-					tvfsFile = decoder.loadFile(rootBuffer);
+					final ByteBuffer rootBuffer = fetchStoredBuffer( storageReference );
+					tvfsFile = decoder.loadFile( rootBuffer );
 
-					tvfsCache.put(storageReference.getEncodingKey(), tvfsFile);
+					tvfsCache.put( storageReference.getEncodingKey(), tvfsFile );
 				}
 			}
 		}

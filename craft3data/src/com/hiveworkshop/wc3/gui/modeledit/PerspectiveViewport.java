@@ -94,7 +94,8 @@ import com.hiveworkshop.wc3.mdl.v2.ModelView;
 import com.hiveworkshop.wc3.util.MathUtils;
 
 public class PerspectiveViewport extends BetterAWTGLCanvas
-		implements MouseListener, ActionListener, MouseWheelListener, RenderResourceAllocator {
+		implements MouseListener, ActionListener, MouseWheelListener, RenderResourceAllocator 
+{
 	private static final float NORMAL_RENDER_LENGTH = AnimatedPerspectiveViewport.NORMAL_RENDER_LENGTH;
 	public static final boolean LOG_EXCEPTIONS = true;
 	ModelView modelView;
@@ -472,6 +473,7 @@ public class PerspectiveViewport extends BetterAWTGLCanvas
 			forceReloadTextures();
 			texLoaded = true;
 		}
+		
 		try {
 			final int formatVersion = modelView.getModel().getFormatVersion();
 			initContext(0, 0, 0);

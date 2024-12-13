@@ -1,5 +1,9 @@
 package com.hiveworkshop.wc3.mdl;
 
+
+/**
+ * 레이어 타입. SD or HD
+ */
 public enum LayerShader {
 	SD,
 	HD;

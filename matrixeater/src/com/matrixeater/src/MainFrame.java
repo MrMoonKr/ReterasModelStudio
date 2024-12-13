@@ -345,6 +345,7 @@ public class MainFrame extends JFrame {
 				break;
 			}
 
+			// Swing 관련 모듈 초기화가 모두 끝난 뒤 실행되어 자연스럽게 애플케이션이 실행된다
 			SwingUtilities.invokeLater( new Runnable() {
 				@Override
 				public void run() {

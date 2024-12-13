@@ -18,8 +18,8 @@ public class IndexEntry {
 	 */
 	private final long fileSize;
 
-	public IndexEntry(final byte[] key, final long dataOffset, final long fileSize) {
-		this.key = new Key(key);
+	public IndexEntry( final byte[] key, final long dataOffset, final long fileSize ) {
+		this.key = new Key( key );
 		this.dataOffset = dataOffset;
 		this.fileSize = fileSize;
 	}
@@ -27,13 +27,13 @@ public class IndexEntry {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("IndexEntry{key=");
-		builder.append(key);
-		builder.append(", dataOffset=");
-		builder.append(dataOffset);
-		builder.append(", fileSize=");
-		builder.append(fileSize);
-		builder.append("}");
+		builder.append( "IndexEntry{key=" );
+		builder.append( key );
+		builder.append( ", dataOffset=" );
+		builder.append( dataOffset );
+		builder.append( ", fileSize=" );
+		builder.append( fileSize );
+		builder.append( "}" );
 
 		return builder.toString();
 	}
@@ -54,7 +54,7 @@ public class IndexEntry {
 		return key;
 	}
 
-	public int compareKey(final Key otherKey) {
-		return otherKey.compareTo(key);
+	public int compareKey( final Key otherKey ) {
+		return otherKey.compareTo( key );
 	}
 }

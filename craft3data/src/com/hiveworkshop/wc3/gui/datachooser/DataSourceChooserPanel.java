@@ -579,7 +579,8 @@ public class DataSourceChooserPanel extends JPanel {
 					new ArrayList<String>(), product );
 			dataSourceDescriptors.add( dataSourceDesc );
 			addDefaultCASCPrefixes( installPathPath, dataSourceDesc, allowPopup );
-		} else {
+		} 
+		else {
 			if ( Files.exists( installPathPath.resolve( "War3.mpq" ) ) ) {
 				dataSourceDescriptors
 						.add( new MpqDataSourceDescriptor( installPathPath.resolve( "War3.mpq" ).toString() ) );

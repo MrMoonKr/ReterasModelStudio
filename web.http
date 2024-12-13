@@ -1,0 +1,100 @@
+// 관련 링크
+// https://wowdev.wiki/TACT
+// https://wowdev.wiki/CASC
+
+###
+# "REST Client" Extension 설치하세요.
+# 원하는 라인에 커서 위치 후 Send Request ( Ctrl + Alt + R ).
+###
+
+###
+# 테스트용
+###
+
+###
+GET http://www.google.co.kr
+
+###
+# 패치서버
+###
+
+###
+# regions
+# us, eu, cn, kr, tw, sg, xx
+###
+
+###
+# 404 Not Found
+###
+GET http://kr.patch.battle.net:1119/
+
+###
+# [CDNS]
+# Name|Path|Hosts|Servers|ConfigPath
+###
+GET http://us.patch.battle.net:1119/w3/cdns
+
+###
+# [Versions]
+# Region|BuildConfig|CDNConfig|KeyRing|BuildId|VersionName|ProductConfig
+###
+GET http://us.patch.battle.net:1119/w3/versions
+
+
+
+### BuildConfig : Build Configuration
+GET http://level3.blizzard.com/tpr/war3/config/85/b6/85b63b814f10bcde9a643bba3e3aa054
+
+### CDNConfig : CDN Configuration
+GET http://level3.blizzard.com/tpr/war3/config/a3/a4/a3a4591a5f65a944401b1a6b4a95b5db
+
+### Product Configuration
+GET http://level3.blizzard.com/tpr/configs/data/f2/20/f220f1a2d27b38e9469987ff66e61f04
+
+### Patch Configuration
+GET http://level3.blizzard.com/tpr/war3/patch/e6/69/e669b23ace65f1908df0a45e7a17fcfa
+
+###
+# [Versions]
+# Region|BuildConfig|CDNConfig|KeyRing|BuildId|VersionName|ProductConfig
+###
+
+###
+GET http://kr.patch.battle.net:1119/wow/versions
+
+###
+GET http://kr.patch.battle.net:1119/w3/versions
+
+###
+GET http://kr.patch.battle.net:1119/d3/versions
+
+### Diablo 4
+GET http://kr.patch.battle.net:1119/fenris/versions
+
+
+###
+# [CDNS]
+# Name|Path|Hosts|Servers|ConfigPath
+###
+
+###
+GET http://kr.patch.battle.net:1119/wow/cdns
+
+###
+GET http://kr.patch.battle.net:1119/w3/cdns
+
+### Diablo 3
+GET http://kr.patch.battle.net:1119/d3/cdns
+
+### Diablo 4
+GET http://kr.patch.battle.net:1119/fenris/cdns
+
+###
+GET http://kr.patch.battle.net:1119/catalogs/versions
+
+###
+GET http://us.patch.battle.net:1119/catalogs/versions
+
+###
+GET http://us.patch.battle.net:1119/catalogs/cdns
+

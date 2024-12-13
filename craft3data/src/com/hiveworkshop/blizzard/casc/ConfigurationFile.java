@@ -27,7 +27,7 @@ public class ConfigurationFile {
 	/**
 	 * Character encoding used by configuration files.
 	 */
-	public static final Charset FILE_ENCODING = Charset.forName("UTF8");
+	public static final Charset FILE_ENCODING = Charset.forName( "UTF8" );
 
 	/**
 	 * Length of the configuration bucket folder names.
@@ -42,25 +42,25 @@ public class ConfigurationFile {
 	/**
 	 * Retrieve a configuration file from the data folder by its key.
 	 *
-	 * @param dataFolder Path of the CASC data folder.
-	 * @param keyHex     Key for configuration file as a hexadecimal string.
+	 * @param dataFolder Path of the CASC data folder. (ex) ~/Data
+	 * @param keyHex "Build Key" for configuration file as a hexadecimal string. (ex) 85b63b814f10bcde9a643bba3e3aa054
 	 * @return The requested configuration file.
 	 * @throws IOException If an exception occurs when retrieving the file.
 	 */
-	public static ConfigurationFile lookupConfigurationFile(final Path dataFolder, final String keyHex)
-			throws IOException {
-		Path file = dataFolder.resolve(CONFIGURATION_FOLDER_NAME);
-		for (int tier = 0; tier < BUCKET_TIERS; tier += 1) {
+	public static ConfigurationFile lookupConfigurationFile( final Path dataFolder, final String keyHex ) throws IOException 
+	{
+		Path file = dataFolder.resolve( CONFIGURATION_FOLDER_NAME ); // "~/Data/config/85/b6/85b63b814f10bcde9a643bba3e3aa054"
+		for ( int tier = 0; tier < BUCKET_TIERS; tier += 1 ) {
 			final int keyOffset = tier * BUCKET_NAME_LENGTH;
-			final String bucketFolderName = keyHex.substring(keyOffset, keyOffset + BUCKET_NAME_LENGTH);
-			file = file.resolve(bucketFolderName);
+			final String bucketFolderName = keyHex.substring( keyOffset, keyOffset + BUCKET_NAME_LENGTH );
+			file = file.resolve( bucketFolderName );
 		}
 
-		file = file.resolve(keyHex);
+		file = file.resolve( keyHex );
 
-		final ByteBuffer fileBuffer = ByteBuffer.wrap(Files.readAllBytes(file));
+		final ByteBuffer fileBuffer = ByteBuffer.wrap( Files.readAllBytes( file ) );
 
-		return new ConfigurationFile(fileBuffer);
+		return new ConfigurationFile( fileBuffer );
 	}
 
 	/**
@@ -74,32 +74,34 @@ public class ConfigurationFile {
 	 * @param fileBuffer File buffer to decode from.
 	 * @throws IOException If one or more IO errors occur.
 	 */
-	public ConfigurationFile(final ByteBuffer fileBuffer) throws IOException {
-		try (final ByteBufferInputStream fileStream = new ByteBufferInputStream(fileBuffer);
-				final Scanner lineScanner = new Scanner(new InputStreamReader(fileStream, FILE_ENCODING))) {
-			while (lineScanner.hasNextLine()) {
+	public ConfigurationFile( final ByteBuffer fileBuffer ) throws IOException {
+
+		try ( final ByteBufferInputStream fileStream = new ByteBufferInputStream( fileBuffer );
+				final Scanner lineScanner = new Scanner( new InputStreamReader( fileStream, FILE_ENCODING ) ) ) 
+		{
+			while ( lineScanner.hasNextLine() ) 
+			{
 				final String line = lineScanner.nextLine().trim();
-				final int lineLength = line.indexOf('#');
+				final int lineLength = line.indexOf( '#' );
 				final String record;
-				if (lineLength != -1) {
-					record = line.substring(0, lineLength);
-				} else {
+				if ( lineLength != -1 ) {
+					record = line.substring( 0, lineLength );
+				} 
+				else {
 					record = line;
 				}
 
-				if (!record.equals("")) {
-					final int assignmentIndex = record.indexOf('=');
-					if (assignmentIndex == -1) {
-						throw new MalformedCASCStructureException(
-								"configuration file line contains record with no assignment");
+				if ( !record.equals( "" ) ) {
+					final int assignmentIndex = record.indexOf( '=' ); // 구분자
+					if ( assignmentIndex == -1 ) {
+						throw new MalformedCASCStructureException( "configuration file line contains record with no assignment" );
 					}
 
-					final String key = record.substring(0, assignmentIndex).trim();
-					final String value = record.substring(assignmentIndex + 1).trim();
+					final String key = record.substring( 0, assignmentIndex ).trim();
+					final String value = record.substring( assignmentIndex + 1 ).trim();
 
-					if (configuration.putIfAbsent(key, value) != null) {
-						throw new MalformedCASCStructureException(
-								"configuration file contains duplicate key declarations");
+					if ( configuration.putIfAbsent( key, value ) != null ) {
+						throw new MalformedCASCStructureException( "configuration file contains duplicate key declarations" );
 					}
 				}
 			}

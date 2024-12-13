@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
@@ -190,6 +191,8 @@ public final class MPQBrowser extends JPanel {
 
 		exportFileChooser = new JFileChooser(SaveProfile.get().getPath());
 
+		// 컨텍스트 메뉴 ( context menu )
+
 		final JPopupMenu contextMenu = new JPopupMenu();
 		final JMenuItem openItem = new JMenuItem("Open");
 		openItem.addActionListener(new ActionListener() {
@@ -259,8 +262,42 @@ public final class MPQBrowser extends JPanel {
 			}
 		});
 		contextMenu.add(useAsTextureItem);
+		contextMenu.addSeparator();
+
+		final JMenuItem exportRoot = new JMenuItem("Export Root");
+		exportRoot.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				exportRoot();
+			}
+		});
+		contextMenu.add(exportRoot);
+
 		mouseAdapterExtension = new MouseAdapterExtension(contextMenu);
 		tree.addMouseListener(mouseAdapterExtension);
+	}
+
+	private void exportRoot() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Save Root File");
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		//fileChooser.setAcceptAllFileFilterUsed(false);
+		fileChooser.addChoosableFileFilter(null);
+
+		int result = fileChooser.showSaveDialog(null);
+		if (result == JFileChooser.APPROVE_OPTION) {
+			//File selectedFile = fileChooser.getSelectedFile();
+
+			// ByteBuffer rootBuffer = ByteBuffer.allocate((int) mpqCodebase.getRootFile().length());
+			// try {
+			// 	Files.copy(mpqCodebase.getRootFile().toPath(), selectedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			// } catch (IOException e) {
+			// 	ExceptionPopup.display(e);
+			// 	e.printStackTrace();
+			// }
+		}
+
+
 	}
 
 	public void refreshTree() {

@@ -3,5 +3,7 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.format.settings.url": ".vscode/java-formatter.xml",
     "java.dependency.packagePresentation": "hierarchical",
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": true,
+    "java.debug.settings.showHex": false,
+    "java.debug.settings.showStaticVariables": false
 }

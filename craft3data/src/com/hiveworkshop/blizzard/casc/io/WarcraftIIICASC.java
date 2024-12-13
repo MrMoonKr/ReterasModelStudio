@@ -181,11 +181,9 @@ public class WarcraftIIICASC implements AutoCloseable {
 	 * @param useMemoryMapping If memory mapped IO should be used to read file data.
 	 * @throws IOException If an exception occurs while mounting.
 	 */
-	public WarcraftIIICASC( final Path installFolder, 
-			final boolean useMemoryMapping, 
-			String product ) throws IOException 
+	public WarcraftIIICASC( final Path installFolder, final boolean useMemoryMapping, String product ) throws IOException 
 	{
-		final Path infoFilePath = installFolder.resolve( Info.BUILD_INFO_FILE_NAME );
+		final Path infoFilePath = installFolder.resolve( Info.BUILD_INFO_FILE_NAME ); // "~/.build.info"
 		buildInfo = new Info( ByteBuffer.wrap( Files.readAllBytes( infoFilePath ) ) );
 
 		final int recordCount = buildInfo.getRecordCount();
@@ -244,6 +242,14 @@ public class WarcraftIIICASC implements AutoCloseable {
 			}
 		}
 		this.vfs = vfs;
+	}
+
+	public ByteBuffer getRootFile() throws IOException {
+		if ( this.vfs != null ) {
+			return this.vfs.fetchRootFile();
+		}
+
+		return null;
 	}
 
 	@Override

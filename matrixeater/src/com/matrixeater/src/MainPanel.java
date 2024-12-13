@@ -828,13 +828,16 @@ public class MainPanel extends JPanel
 		@Override
 		public void actionPerformed( final ActionEvent e ) {
 			final UnitEditorTree unitEditorTree = createUnitEditorTree();
-			rootWindow
-					.setWindow( new SplitWindow( true, 0.75f, rootWindow.getWindow(),
-							new View( "Unit Browser", new ImageIcon(
-									MainFrame.frame.getIconImage().getScaledInstance( 16, 16, Image.SCALE_FAST ) ),
-									new JScrollPane( unitEditorTree ) ) ) );
+			rootWindow.setWindow( new SplitWindow( true, 0.75f, 
+					rootWindow.getWindow(),
+					new View( "Unit Browser", 
+							new ImageIcon( MainFrame.frame.getIconImage().getScaledInstance( 16, 16, Image.SCALE_FAST ) ),
+							new JScrollPane( unitEditorTree ) ) ) );
 		}
 	};
+	/**
+	 * "Doodad Browser" 메뉴 클릭 액션 핸들러
+	 */
 	AbstractAction openDoodadViewerAction = new AbstractAction( "Open Doodad Browser" ) {
 		@Override
 		public void actionPerformed( final ActionEvent e ) {
@@ -869,7 +872,8 @@ public class MainPanel extends JPanel
 								}
 							}
 						}
-					} catch ( final Exception exc ) {
+					} 
+					catch ( final Exception exc ) {
 						exc.printStackTrace();
 						ExceptionPopup.display( exc );
 					}
@@ -1820,12 +1824,15 @@ public class MainPanel extends JPanel
 				getUnitEditorSettings(), WorldEditorDataType.UNITS, new MDLLoadListener() {
 					@Override
 					public void loadFile( final String mdxFilePath, final boolean temporary, final boolean selectNewTab,
-							final ImageIcon icon, final MutableGameObject object ) {
-						if ( selectNewTab ) {
+							final ImageIcon icon, final MutableGameObject object ) 
+					{
+						if ( selectNewTab ) 
+						{
 							SaveProfile.get().addRecentFetch( new RecentFetch( RecentFetchType.UNIT_BROWSER,
 									object.getAlias().asStringValue(), object.getName(), null ) );
 							updateRecent();
 						}
+
 						MainPanel.this.loadStreamMdx( MpqCodebase.get().getResourceAsStream( mdxFilePath ), temporary,
 								selectNewTab, icon );
 					}
@@ -1959,6 +1966,11 @@ public class MainPanel extends JPanel
 				StandardObjectData.getStandardUnitMeta(), editorData );
 	}
 
+	/**
+	 * "war3map.w3d" 데이터 및 "war3map.wts" 데이터 로딩 시도.
+	 * "Doodads\\Doodads.slk" 및 "Doodads\\DoodadSkins.txt" 실재 로딩
+	 * @return
+	 */
 	public MutableObjectData getDoodadData() {
 		final War3ObjectDataChangeset editorData = new War3ObjectDataChangeset( 'd' );
 		try {
@@ -1970,7 +1982,8 @@ public class MainPanel extends JPanel
 								: null,
 						true );
 			}
-		} catch ( final IOException e ) {
+		} 
+		catch ( final IOException e ) {
 			e.printStackTrace();
 		}
 		return new MutableObjectData( WorldEditorDataType.DOODADS, StandardObjectData.getStandardDoodads(),
@@ -6021,7 +6034,11 @@ public class MainPanel extends JPanel
 		return output;
 	}
 
+	/**
+	 * 파일 로딩 메인 헬퍼 메소드
+	 */
 	public void loadFile( final File f, final boolean temporary, final boolean selectNewTab, final ImageIcon icon ) {
+
 		if ( f.getPath().toLowerCase().endsWith( "blp" ) ) {
 			loadBLPPathAsModel( f.getName(), f.getParentFile() );
 			return;
@@ -6030,6 +6047,7 @@ public class MainPanel extends JPanel
 			loadBLPPathAsModel( f.getName(), f.getParentFile() );
 			return;
 		}
+
 		ModelPanel temp = null;
 		if ( f.getPath().toLowerCase().endsWith( "mdx" ) ) {
 			try ( BlizzardDataInputStream in = new BlizzardDataInputStream( new FileInputStream( f ) ) ) {
@@ -6038,16 +6056,19 @@ public class MainPanel extends JPanel
 				temp = new ModelPanel( this, model, prefs, MainPanel.this, selectionItemTypeGroup, selectionModeGroup,
 						modelStructureChangeListener, coordDisplayListener, viewportTransferHandler,
 						activeViewportWatcher, icon, false, textureExporter, animationModeDeleteListener );
-			} catch ( final FileNotFoundException e ) {
+			} 
+			catch ( final FileNotFoundException e ) {
 				e.printStackTrace();
 				ExceptionPopup.display( e );
 				throw new RuntimeException( "Reading mdx failed" );
-			} catch ( final IOException e ) {
+			} 
+			catch ( final IOException e ) {
 				e.printStackTrace();
 				ExceptionPopup.display( e );
 				throw new RuntimeException( "Reading mdx failed" );
 			}
-		} else if ( f.getPath().toLowerCase().endsWith( "obj" ) ) {
+		} 
+		else if ( f.getPath().toLowerCase().endsWith( "obj" ) ) {
 			// final Build builder = new Build();
 			// final MDLOBJBuilderInterface builder = new
 			// MDLOBJBuilderInterface();
@@ -6064,7 +6085,8 @@ public class MainPanel extends JPanel
 				ExceptionPopup.display( e );
 				e.printStackTrace();
 			}
-		} else {
+		} 
+		else {
 			temp = new ModelPanel( this, EditableModel.read( f ), prefs, MainPanel.this, selectionItemTypeGroup,
 					selectionModeGroup, modelStructureChangeListener, coordDisplayListener, viewportTransferHandler,
 					activeViewportWatcher, icon, false, textureExporter, animationModeDeleteListener );
@@ -6073,8 +6095,8 @@ public class MainPanel extends JPanel
 		loadModel( temporary, selectNewTab, temp );
 	}
 
-	public void loadStreamMdx( final InputStream f, final boolean temporary, final boolean selectNewTab,
-			final ImageIcon icon ) {
+	public void loadStreamMdx( final InputStream f, final boolean temporary, final boolean selectNewTab, final ImageIcon icon ) 
+	{
 		ModelPanel temp = null;
 		try ( BlizzardDataInputStream in = new BlizzardDataInputStream( f ) ) {
 			final EditableModel model = new EditableModel( MdxUtils.loadModel( in ) );
@@ -6082,15 +6104,18 @@ public class MainPanel extends JPanel
 			temp = new ModelPanel( this, model, prefs, MainPanel.this, selectionItemTypeGroup, selectionModeGroup,
 					modelStructureChangeListener, coordDisplayListener, viewportTransferHandler, activeViewportWatcher,
 					icon, false, textureExporter, animationModeDeleteListener );
-		} catch ( final FileNotFoundException e ) {
+		} 
+		catch ( final FileNotFoundException e ) {
 			e.printStackTrace();
 			ExceptionPopup.display( e );
 			throw new RuntimeException( "Reading mdx failed" );
-		} catch ( final IOException e ) {
+		} 
+		catch ( final IOException e ) {
 			e.printStackTrace();
 			ExceptionPopup.display( e );
 			throw new RuntimeException( "Reading mdx failed" );
 		}
+
 		loadModel( temporary, selectNewTab, temp );
 	}
 
@@ -6167,7 +6192,8 @@ public class MainPanel extends JPanel
 		modelPanel.getCameraController().setCurrentCamera( blpCam );
 	}
 
-	public void loadModel( final boolean temporary, final boolean selectNewTab, final ModelPanel temp ) {
+	public void loadModel( final boolean temporary, final boolean selectNewTab, final ModelPanel temp ) 
+	{
 		if ( temporary ) {
 			temp.getModelViewManager().getModel().setTemp( true );
 		}
@@ -6182,6 +6208,7 @@ public class MainPanel extends JPanel
 		// });
 		final JMenuItem menuItem = new JMenuItem( temp.getModel().getName() );
 		menuItem.setIcon( temp.getIcon() );
+
 		windowMenu.add( menuItem );
 		menuItem.addActionListener( new ActionListener() {
 			@Override
@@ -6193,7 +6220,8 @@ public class MainPanel extends JPanel
 		temp.getModelViewManager().addStateListener( new RepaintingModelStateListener( MainPanel.this ) );
 		temp.changeActivity( currentActivity );
 
-		if ( geoControl == null ) {
+		if ( geoControl == null ) 
+		{
 			geoControl = new JScrollPane( temp.getModelViewManagingTree() );
 			viewportControllerWindowView.setComponent( geoControl );
 			viewportControllerWindowView.repaint();
@@ -6203,6 +6231,7 @@ public class MainPanel extends JPanel
 			modelDataView.repaint();
 			tracksView.setComponent( temp.getTracksEditorPanel() );
 		}
+
 		addTabForView( temp, selectNewTab );
 		modelPanels.add( temp );
 
@@ -6217,12 +6246,15 @@ public class MainPanel extends JPanel
 		// }).start();
 		toolsMenu.setEnabled( true );
 
-		if ( selectNewTab && ( prefs.getQuickBrowse() != null ) && prefs.getQuickBrowse() ) {
+		if ( selectNewTab && ( prefs.getQuickBrowse() != null ) && prefs.getQuickBrowse() ) 
+		{
 			for ( int i = modelPanels.size() - 2; i >= 0; i-- ) {
 				final ModelPanel openModelPanel = modelPanels.get( i );
 				if ( openModelPanel.getUndoManager().isRedoListEmpty()
-						&& openModelPanel.getUndoManager().isUndoListEmpty() ) {
-					if ( openModelPanel.close( this ) ) {
+						&& openModelPanel.getUndoManager().isUndoListEmpty() ) 
+				{
+					if ( openModelPanel.close( this ) ) 
+					{
 						modelPanels.remove( openModelPanel );
 						windowMenu.remove( openModelPanel.getMenuItem() );
 					}

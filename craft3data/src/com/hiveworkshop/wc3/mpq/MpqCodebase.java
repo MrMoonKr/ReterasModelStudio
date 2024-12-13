@@ -47,6 +47,8 @@ public class MpqCodebase implements Codebase, DataSource {
 	 */
 	Map<String, File> cache = new HashMap<>();
 
+	
+
 	/**
 	 * 특정 에셋 경로명의 파일 얻기
 	 * @param filepath 에셋 경로명
@@ -195,6 +197,10 @@ public class MpqCodebase implements Codebase, DataSource {
 
 	private static MpqCodebase current;
 
+	/**
+	 * 일종의 싱글톤 접근 메서드
+	 * @return
+	 */
 	public static MpqCodebase get() {
 		if ( current == null ) {
 			current = new MpqCodebase( SaveProfile.get().getDataSources() );
