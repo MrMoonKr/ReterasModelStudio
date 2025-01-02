@@ -21,7 +21,7 @@ import com.hiveworkshop.wc3.gui.datachooser.MpqDataSourceDescriptor;
 import com.hiveworkshop.wc3.user.WarcraftDataSourceChangeListener.WarcraftDataSourceChangeNotifier;
 
 /**
- * 프로그램 관련 설정 데이터를 파일로 저장 및 파일로부터 로드하는 클래스
+ * 프로그램 관련 설정 데이터를 파일( "user.profile" )로 저장 및 파일로부터 로드하는 클래스
  */
 public class SaveProfile implements Serializable {
 

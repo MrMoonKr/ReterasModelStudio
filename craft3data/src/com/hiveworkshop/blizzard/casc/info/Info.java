@@ -13,6 +13,7 @@ import com.hiveworkshop.blizzard.casc.nio.MalformedCASCStructureException;
 import com.hiveworkshop.nio.ByteBufferInputStream;
 
 /**
+ * ".build.info" 파일 데이터 로더
  * Top level CASC information file containing configuration information and
  * entry point references.
  */
@@ -26,7 +27,7 @@ public class Info {
 	/**
 	 * Character encoding used by info files.
 	 */
-	public static final Charset FILE_ENCODING = Charset.forName("UTF8");
+	public static final Charset FILE_ENCODING = Charset.forName( "UTF8" );
 
 	/**
 	 * Field separator used by CASC info files.
@@ -40,8 +41,8 @@ public class Info {
 	 * @param encodedLine Line of info file.
 	 * @return Array of separate fields.
 	 */
-	private static String[] separateFields(final String encodedLine) {
-		return encodedLine.split(FIELD_SEPARATOR_REGEX);
+	private static String[] separateFields( final String encodedLine ) {
+		return encodedLine.split( FIELD_SEPARATOR_REGEX );
 	}
 
 	private final ArrayList<FieldDescriptor> fieldDescriptors = new ArrayList<>();
@@ -54,19 +55,19 @@ public class Info {
 	 * @param encodedLines Encoded lines.
 	 * @throws IOException
 	 */
-	public Info(final ByteBuffer fileBuffer) throws IOException {
-		try (final ByteBufferInputStream fileStream = new ByteBufferInputStream(fileBuffer);
-				final Scanner lineScanner = new Scanner(new InputStreamReader(fileStream, FILE_ENCODING))) {
-			final String[] encodedFieldDescriptors = separateFields(lineScanner.nextLine());
-			for (final String encodedFieldDescriptor : encodedFieldDescriptors) {
-				fieldDescriptors.add(new FieldDescriptor(encodedFieldDescriptor));
+	public Info( final ByteBuffer fileBuffer ) throws IOException {
+		try ( final ByteBufferInputStream fileStream = new ByteBufferInputStream( fileBuffer );
+				final Scanner lineScanner = new Scanner( new InputStreamReader( fileStream, FILE_ENCODING ) ) ) {
+			final String[] encodedFieldDescriptors = separateFields( lineScanner.nextLine() );
+			for ( final String encodedFieldDescriptor : encodedFieldDescriptors ) {
+				fieldDescriptors.add( new FieldDescriptor( encodedFieldDescriptor ) );
 			}
 
-			while (lineScanner.hasNextLine()) {
-				records.add(new ArrayList<>(Arrays.asList(separateFields(lineScanner.nextLine()))));
+			while ( lineScanner.hasNextLine() ) {
+				records.add( new ArrayList<>( Arrays.asList( separateFields( lineScanner.nextLine() ) ) ) );
 			}
-		} catch (final NoSuchElementException e) {
-			throw new MalformedCASCStructureException("missing headers");
+		} catch ( final NoSuchElementException e ) {
+			throw new MalformedCASCStructureException( "missing headers" );
 		}
 	}
 
@@ -79,8 +80,8 @@ public class Info {
 	 * @throws IndexOutOfBoundsException When recordIndex or fieldIndex are out of
 	 *                                   bounds.
 	 */
-	public String getField(final int recordIndex, final int fieldIndex) {
-		return records.get(recordIndex).get(fieldIndex);
+	public String getField( final int recordIndex, final int fieldIndex ) {
+		return records.get( recordIndex ).get( fieldIndex );
 	}
 
 	/**
@@ -91,15 +92,15 @@ public class Info {
 	 * @return Field value, or null if field does not exist.
 	 * @throws IndexOutOfBoundsException When recordIndex is out of bounds.
 	 */
-	public String getField(final int recordIndex, final String fieldName) {
+	public String getField( final int recordIndex, final String fieldName ) {
 		// resolve field
-		final int fieldIndex = getFieldIndex(fieldName);
-		if (fieldIndex == -1) {
+		final int fieldIndex = getFieldIndex( fieldName );
+		if ( fieldIndex == -1 ) {
 			// field does not exist
 			return null;
 		}
 
-		return getField(recordIndex, fieldIndex);
+		return getField( recordIndex, fieldIndex );
 	}
 
 	/**
@@ -117,8 +118,8 @@ public class Info {
 	 * @param fieldIndex Field index to retrieve descriptor from.
 	 * @return Field descriptor for field index.
 	 */
-	public FieldDescriptor getFieldDescriptor(final int fieldIndex) {
-		return fieldDescriptors.get(fieldIndex);
+	public FieldDescriptor getFieldDescriptor( final int fieldIndex ) {
+		return fieldDescriptors.get( fieldIndex );
 	}
 
 	/**
@@ -128,9 +129,9 @@ public class Info {
 	 * @param name Name of the field to find.
 	 * @return Field index of field.
 	 */
-	public int getFieldIndex(final String name) {
-		for (int i = 0; i < fieldDescriptors.size(); i += 1) {
-			if (fieldDescriptors.get(i).getName().equals(name)) {
+	public int getFieldIndex( final String name ) {
+		for ( int i = 0; i < fieldDescriptors.size(); i += 1 ) {
+			if ( fieldDescriptors.get( i ).getName().equals( name ) ) {
 				return i;
 			}
 		}
