@@ -216,6 +216,8 @@ public class WarcraftIIICASC implements AutoCloseable {
         if ( buildKeyFieldIndex == -1 ) {
             throw new MalformedCASCStructureException( "build info contains no build key field" );
         }
+
+        // 빌드키 조회
         final String buildKey = buildInfo.getField( activeInfoRecord, buildKeyFieldIndex );
 
         // resolve data folder
@@ -224,17 +226,18 @@ public class WarcraftIIICASC implements AutoCloseable {
             throw new MalformedCASCStructureException( "data folder is missing" );
         }
 
-        // resolve build configuration file
+        // 빌드키로 빌드파일 로딩 resolve build configuration file
         buildConfiguration = ConfigurationFile.lookupConfigurationFile( dataPath, buildKey );
 
-        // mounting local storage
+        // 로컬 에셋 아카이브 시스템 mounting local storage
         localStorage = new Storage( dataPath, false, useMemoryMapping );
 
         // mounting virtual file system
         VirtualFileSystem vfs = null;
         try {
             vfs = new VirtualFileSystem( localStorage, buildConfiguration.getConfiguration() );
-        } finally {
+        } 
+        finally {
             if ( vfs == null ) {
                 // storage must be closed to prevent resource leaks
                 localStorage.close();

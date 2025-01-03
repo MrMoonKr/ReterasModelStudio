@@ -16,157 +16,161 @@ import com.hiveworkshop.blizzard.casc.nio.MalformedCASCStructureException;
  * .idx 파일 랩퍼 클래스.
  */
 public class IndexFile {
-	/**
-	 * Alignment of the index entry block in bytes.
-	 */
-	private static final int ENTRY_BLOCK_ALIGNMENT = 16;
+    /**
+     * Alignment of the index entry block in bytes.
+     */
+    private static final int ENTRY_BLOCK_ALIGNMENT = 16;
 
-	private int bucketIndex;
+    private int bucketIndex;
+    private int fileSizeLength;
+    private int dataOffsetLength;
+    private int encodingKeyLength;
+    private int dataFileSizeBits;
+    private long dataSizeMaximum;
 
-	private int fileSizeLength;
+    /**
+     * 룩업 배열( Lookup Array )
+     */
+    private final ArrayList<IndexEntry> entries = new ArrayList<>();
 
-	private int dataOffsetLength;
+    public IndexFile( final ByteBuffer fileBuffer ) throws IOException {
+        // 데이터 파싱
+        this.decode( fileBuffer );
+    }
 
-	private int encodingKeyLength;
+    /**
+     * 데이터 파싱
+     * 
+     * @param fileBuffer
+     * @throws IOException
+     */
+    private void decode( final ByteBuffer fileBuffer ) throws IOException {
 
-	private int dataFileSizeBits;
+        final ByteBuffer sourceBuffer = fileBuffer.slice();
 
-	private long dataSizeMaximum;
+        // decode header
 
-	private final ArrayList<IndexEntry> entries = new ArrayList<>();
+        final LittleHashBlockProcessor hashBlockProcessor = new LittleHashBlockProcessor();
 
-	public IndexFile( final ByteBuffer fileBuffer ) throws IOException {
-		// 데이터 파싱
-		this.decode( fileBuffer );
-	}
+        final ByteBuffer headerBuffer;
+        try {
+            headerBuffer = hashBlockProcessor.getBlock( sourceBuffer );
+        } 
+        catch ( final HashMismatchException e ) {
+            throw new MalformedCASCStructureException( "header block corrupt", e );
+        }
 
-	/**
-	 * 데이터 파싱
-	 * @param fileBuffer
-	 * @throws IOException
-	 */
-	private void decode( final ByteBuffer fileBuffer ) throws IOException {
+        headerBuffer.order( ByteOrder.LITTLE_ENDIAN );
 
-		final ByteBuffer sourceBuffer = fileBuffer.slice();
+        try {
+            if ( headerBuffer.getShort() != 7 ) // 파일 버전 Ox07 for CASCv2
+            {
+                // possibly malformed
+            }
 
-		// decode header
+            bucketIndex         = Byte.toUnsignedInt( headerBuffer.get() );
+            if ( headerBuffer.get() != 0 ) {
+                // possibly malformed
+            }
+            fileSizeLength      = Byte.toUnsignedInt( headerBuffer.get() ); // 4
+            dataOffsetLength    = Byte.toUnsignedInt( headerBuffer.get() ); // 5
+            encodingKeyLength   = Byte.toUnsignedInt( headerBuffer.get() ); // 9
+            dataFileSizeBits    = Byte.toUnsignedInt( headerBuffer.get() );
+            dataSizeMaximum     = headerBuffer.getLong();
+        } 
+        catch ( final BufferUnderflowException e ) {
+            throw new MalformedCASCStructureException( "header block too small" );
+        }
 
-		final LittleHashBlockProcessor hashBlockProcessor = new LittleHashBlockProcessor();
+        // decode entries
 
-		final ByteBuffer headerBuffer;
-		try {
-			headerBuffer = hashBlockProcessor.getBlock( sourceBuffer );
-		} 
-		catch ( final HashMismatchException e ) {
-			throw new MalformedCASCStructureException( "header block corrupt", e );
-		}
+        final int entriesAlignmentMask = ENTRY_BLOCK_ALIGNMENT - 1;
+        sourceBuffer.position( ( sourceBuffer.position() + entriesAlignmentMask ) & ~entriesAlignmentMask );
 
-		headerBuffer.order( ByteOrder.LITTLE_ENDIAN );
+        final ByteBuffer entryBuffer;
+        try {
+            entryBuffer = hashBlockProcessor.getBlock( sourceBuffer );
+        } 
+        catch ( final HashMismatchException e ) {
+            throw new MalformedCASCStructureException( "entries block corrupt", e );
+        }
 
-		try {
-			if ( headerBuffer.getShort() != 7 ) {
-				// possibly malformed
-			}
+        final int entryLength   = fileSizeLength + dataOffsetLength + encodingKeyLength; // 4 + 5 + 9 = 18
+        final int entryCount    = entryBuffer.remaining() / entryLength;
 
-			bucketIndex = Byte.toUnsignedInt( headerBuffer.get() );
-			if ( headerBuffer.get() != 0 ) {
-				// possibly malformed
-			}
-			fileSizeLength = Byte.toUnsignedInt( headerBuffer.get() );
-			dataOffsetLength = Byte.toUnsignedInt( headerBuffer.get() );
-			encodingKeyLength = Byte.toUnsignedInt( headerBuffer.get() );
-			dataFileSizeBits = Byte.toUnsignedInt( headerBuffer.get() );
-			dataSizeMaximum = headerBuffer.getLong();
-		} 
-		catch ( final BufferUnderflowException e ) {
-			throw new MalformedCASCStructureException( "header block too small" );
-		}
+        this.entries.ensureCapacity( entryCount );
 
-		// decode entries
+        final ByteBuffer decodeDataOffsetBuffer = ByteBuffer.allocate( Long.BYTES );
+        final int decodeDataOffsetOffset        = Long.BYTES - dataOffsetLength;
+        final ByteBuffer decodeFileSizeBuffer   = ByteBuffer.allocate( Long.BYTES );
+        decodeFileSizeBuffer.order( ByteOrder.LITTLE_ENDIAN );
 
-		final int entriesAlignmentMask = ENTRY_BLOCK_ALIGNMENT - 1;
-		sourceBuffer.position( ( sourceBuffer.position() + entriesAlignmentMask ) & ~entriesAlignmentMask );
+        for ( int i = 0; i < entryCount; i += 1 ) {
 
-		final ByteBuffer entryBuffer;
-		try {
-			entryBuffer = hashBlockProcessor.getBlock( sourceBuffer );
-		} catch ( final HashMismatchException e ) {
-			throw new MalformedCASCStructureException( "entries block corrupt", e );
-		}
+            final byte[] key = new byte[encodingKeyLength]; // 9 bytes
+            entryBuffer.get( key );
 
-		final int entryLength = fileSizeLength + dataOffsetLength + encodingKeyLength;
-		final int entryCount = entryBuffer.remaining() / entryLength;
+            entryBuffer.get( decodeDataOffsetBuffer.array(), decodeDataOffsetOffset, dataOffsetLength );
+            final long dataOffset = decodeDataOffsetBuffer.getLong( 0 );
 
-		entries.ensureCapacity( entryCount );
+            entryBuffer.get( decodeFileSizeBuffer.array(), 0, fileSizeLength ); // 4 bytes
+            final long fileSize = decodeFileSizeBuffer.getLong( 0 );
 
-		final ByteBuffer decodeDataOffsetBuffer = ByteBuffer.allocate( Long.BYTES );
-		final int decodeDataOffsetOffset = Long.BYTES - dataOffsetLength;
-		final ByteBuffer decodeFileSizeBuffer = ByteBuffer.allocate( Long.BYTES );
-		decodeFileSizeBuffer.order( ByteOrder.LITTLE_ENDIAN );
-		for ( int i = 0; i < entryCount; i += 1 ) {
-			final byte[] key = new byte[encodingKeyLength];
-			entryBuffer.get( key );
+            // this can be used to detect special cross linking entries
+            // if (getIndexNumber(entry.key, entry.key.length) != bucketIndex);
+            // System.out.println("Bad key index: index=" + i + ", entry=" + entry + ",
+            // bucket=" + getIndexNumber(entry.key, entry.key.length));
 
-			entryBuffer.get( decodeDataOffsetBuffer.array(), decodeDataOffsetOffset, dataOffsetLength );
-			final long dataOffset = decodeDataOffsetBuffer.getLong( 0 );
+            entries.add( new IndexEntry( key, dataOffset, fileSize ) );
+        }
 
-			entryBuffer.get( decodeFileSizeBuffer.array(), 0, fileSizeLength );
-			final long fileSize = decodeFileSizeBuffer.getLong( 0 );
+        if ( entryBuffer.hasRemaining() ) {
+            throw new MalformedCASCStructureException( "unable to fully process entries block" );
+        }
 
-			// this can be used to detect special cross linking entries
-			// if (getIndexNumber(entry.key, entry.key.length) != bucketIndex);
-			// System.out.println("Bad key index: index=" + i + ", entry=" + entry + ",
-			// bucket=" + getIndexNumber(entry.key, entry.key.length));
+        fileBuffer.position( fileBuffer.position() + sourceBuffer.position() );
+    }
 
-			entries.add( new IndexEntry( key, dataOffset, fileSize ) );
-		}
+    public int getBucketIndex() {
+        return bucketIndex;
+    }
 
-		if ( entryBuffer.hasRemaining() ) {
-			throw new MalformedCASCStructureException( "unable to fully process entries block" );
-		}
+    public int getStoreIndex( final long dataOffset ) {
+        return ( int )( dataOffset >>> dataFileSizeBits );
+    }
 
-		fileBuffer.position( fileBuffer.position() + sourceBuffer.position() );
-	}
+    public long getStoreOffset( final long dataOffset ) {
+        return dataOffset & ( ( 1L << dataFileSizeBits ) - 1L );
+    }
 
-	public int getBucketIndex() {
-		return bucketIndex;
-	}
+    public long getDataSizeMaximum() {
+        return dataSizeMaximum;
+    }
 
-	public int getStoreIndex( final long dataOffset ) {
-		return ( int )( dataOffset >>> dataFileSizeBits );
-	}
+    public IndexEntry getEntry( final Key encodingKey ) {
+        
+        final int index = Collections.binarySearch( entries, encodingKey, ( left, right ) -> {
+            if ( ( left instanceof IndexEntry ) && ( right instanceof Key ) ) {
+                final IndexEntry entry = ( IndexEntry )left;
+                final Key ekey = ( Key )right;
+                return entry.getKey().compareTo( ekey );
+            }
+            throw new IllegalArgumentException( "binary search comparing in inverted order" );
+        } );
 
-	public long getStoreOffset( final long dataOffset ) {
-		return dataOffset & ( ( 1L << dataFileSizeBits ) - 1L );
-	}
+        return index >= 0 ? entries.get( index ) : null;
+    }
 
-	public long getDataSizeMaximum() {
-		return dataSizeMaximum;
-	}
+    public IndexEntry getEntry( final int index ) {
+        return entries.get( index );
+    }
 
-	public IndexEntry getEntry( final Key encodingKey ) {
-		final int index = Collections.binarySearch( entries, encodingKey, ( left, right ) -> {
-			if ( ( left instanceof IndexEntry ) && ( right instanceof Key ) ) {
-				final IndexEntry entry = ( IndexEntry )left;
-				final Key ekey = ( Key )right;
-				return entry.getKey().compareTo( ekey );
-			}
-			throw new IllegalArgumentException( "binary search comparing in inverted order" );
-		} );
+    public int getEntryCount() {
+        return entries.size();
+    }
 
-		return index >= 0 ? entries.get( index ) : null;
-	}
-
-	public IndexEntry getEntry( final int index ) {
-		return entries.get( index );
-	}
-
-	public int getEntryCount() {
-		return entries.size();
-	}
-
-	public int getEncodingKeyLength() {
-		return encodingKeyLength;
-	}
+    public int getEncodingKeyLength() {
+        return encodingKeyLength;
+    }
 
 }

@@ -738,7 +738,8 @@ public class DataSourceChooserPanel extends JPanel {
                         prefixes.addElement( file );
                     }
                 }
-            } finally {
+            } 
+            finally {
                 tempCascReader.close();
             }
             final JComboBox<String> prefixChoiceComboBox = new JComboBox<>( prefixes );
@@ -815,12 +816,15 @@ public class DataSourceChooserPanel extends JPanel {
                 final FileSystem rootFileSystem = tempCascReader.getRootFileSystem();
                 if ( rootFileSystem.isFile( "war3.mpq\\units\\unitdata.slk" ) ) {
                     patchFormat = SupportedCascPatchFormat.PATCH130;
-                } else if ( tempCascReader.getRootFileSystem()
+                } 
+                else if ( tempCascReader.getRootFileSystem()
                         .isFile( "war3.w3mod\\_hd.w3mod\\units\\human\\footman\\footman.mdx" ) ) {
                     patchFormat = SupportedCascPatchFormat.PATCH132;
-                } else if ( tempCascReader.getRootFileSystem().isFile( "war3.w3mod\\units\\unitdata.slk" ) ) {
+                } 
+                else if ( tempCascReader.getRootFileSystem().isFile( "war3.w3mod\\units\\unitdata.slk" ) ) {
                     patchFormat = SupportedCascPatchFormat.PATCH131;
-                } else {
+                } 
+                else {
                     patchFormat = SupportedCascPatchFormat.UNKNOWN_FUTURE_PATCH;
                 }
                 // Now, we really want to know the locale.
@@ -966,7 +970,8 @@ public class DataSourceChooserPanel extends JPanel {
             } finally {
                 tempCascReader.close();
             }
-        } catch ( final Exception e1 ) {
+        } 
+        catch ( final Exception e1 ) {
             ExceptionPopup.display( e1 );
             e1.printStackTrace();
         }
