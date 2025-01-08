@@ -48,16 +48,15 @@ public class ConfigurationFile {
      * @return The requested configuration file.
      * @throws IOException If an exception occurs when retrieving the file.
      */
-    public static ConfigurationFile lookupConfigurationFile( final Path dataFolder, final String keyHex )
-            throws IOException {
-        Path file = dataFolder.resolve( CONFIGURATION_FOLDER_NAME ); // "~/Data/config/85/b6/85b63b814f10bcde9a643bba3e3aa054"
+    public static ConfigurationFile lookupConfigurationFile( final Path dataFolder, final String keyHex ) throws IOException 
+    {
+        Path file = dataFolder.resolve( CONFIGURATION_FOLDER_NAME ); // "INSTALL_DIR/Data/config"
         for ( int tier = 0; tier < BUCKET_TIERS; tier += 1 ) {
             final int keyOffset = tier * BUCKET_NAME_LENGTH;
             final String bucketFolderName = keyHex.substring( keyOffset, keyOffset + BUCKET_NAME_LENGTH );
             file = file.resolve( bucketFolderName );
         }
-
-        file = file.resolve( keyHex );
+        file = file.resolve( keyHex ); // "INSTALL_DIR/Data/config/85/b6/85b63b814f10bcde9a643bba3e3aa054"
 
         final ByteBuffer fileBuffer = ByteBuffer.wrap( Files.readAllBytes( file ) );
 

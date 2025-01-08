@@ -49,8 +49,17 @@ public class TVFSDecoder {
     private int maximumPathDepth = 0;
 
     private int contentsOffsetSize = 0;
+    /**
+     * Path Table Buffer
+     */
     private ByteBuffer pathBuffer = null;
+    /**
+     * VFS Table Buffer
+     */
     private ByteBuffer logicalBuffer = null;
+    /**
+     * CASC Table Buffer
+     */
     private ByteBuffer storageBuffer = null;
 
     /**
@@ -65,8 +74,13 @@ public class TVFSDecoder {
         contentsOffsetDecoder = ByteBuffer.allocate( Integer.BYTES );
     }
 
+    /**
+     * 최상위 루트 폴더 노드를 읽어옵니다.
+     * @return
+     * @throws MalformedCASCStructureException
+     */
     public List<PathNode> decodeContainer() throws MalformedCASCStructureException {
-        return decodeContainer( pathBuffer );
+        return this.decodeContainer( this.pathBuffer );
     }
 
     /**
@@ -109,29 +123,29 @@ public class TVFSDecoder {
             {
                 // prefix node
                 final int containerSize = value & ~VALUE_CONTAINER_FLAG;
-                pathBuffer.position( pathBuffer.position() - Integer.BYTES );
 
+                pathBuffer.position( pathBuffer.position() - Integer.BYTES );
                 if ( containerSize > pathBuffer.remaining() ) {
                     throw new MalformedCASCStructureException( "prefix node container extends beyond path container" );
                 }
-
                 pathBuffer.limit( pathBuffer.position() + containerSize );
 
                 final ByteBuffer containerBuffer = pathBuffer.slice();
 
+                // 다음 노드 시작 위치 및 전체 크기 설정정
                 pathBuffer.position( pathBuffer.limit() );
                 pathBuffer.limit( pathBuffer.capacity() );
 
                 containerBuffer.position( Integer.BYTES );
 
-                final List<PathNode> nodes = decodeContainer( containerBuffer );
+                final List<PathNode> nodes = this.decodeContainer( containerBuffer );
 
                 node = new PrefixNode( pathFragments, nodes );
             } 
             else // 파일인 경우
             {
                 // file value
-                final StorageReference[] fileReferences = getFileReferences( value );
+                final StorageReference[] fileReferences = this.getFileReferences( value );
 
                 node = new FileNode( pathFragments, Arrays.asList( fileReferences ) );
             }
@@ -206,42 +220,42 @@ public class TVFSDecoder {
 
         // decode header
         localBuffer.limit( localBuffer.capacity() );
-        localBuffer.position( IDENTIFIER.remaining() ); // skip identifier
+        localBuffer.position( IDENTIFIER.remaining() ); // skip identifier ( fourCC )
 
         try 
         {
-            version = localBuffer.get();
+            version = localBuffer.get(); // version
             if ( version != 1 ) {
                 throw new UnsupportedOperationException( "unsupported TVFS version: " + version );
             }
-            
-            final int headerSize = Byte.toUnsignedInt( localBuffer.get() );
+
+            final int headerSize = Byte.toUnsignedInt( localBuffer.get() ); // headerSize
             if ( headerSize > localBuffer.capacity() ) {
                 throw new MalformedCASCStructureException( "TVFS header extends past end of file" );
             }
+
             localBuffer.limit( headerSize );
 
-            encodingKeySize = Byte.toUnsignedInt( localBuffer.get() );
-            patchKeySize = Byte.toUnsignedInt( localBuffer.get() );
-            flags = localBuffer.getInt();
+            encodingKeySize = Byte.toUnsignedInt( localBuffer.get() ); // eKeySize
+            patchKeySize = Byte.toUnsignedInt( localBuffer.get() ); // pKeySize
 
-            pathOffset = localBuffer.getInt();
-            pathSize = localBuffer.getInt();
+            flags = localBuffer.getInt(); // flags
+
+            pathOffset = localBuffer.getInt(); // pathTableOffset
+            pathSize = localBuffer.getInt(); // pathTableSize
             if ( Integer.toUnsignedLong( pathOffset ) + Integer.toUnsignedLong( pathSize ) > localBuffer.capacity() ) {
                 throw new MalformedCASCStructureException( "path stream extends past end of file" );
             }
 
-            fileReferenceOffset = localBuffer.getInt();
-            fileReferenceSize = localBuffer.getInt();
-            if ( Integer.toUnsignedLong( fileReferenceOffset )
-                    + Integer.toUnsignedLong( fileReferenceSize ) > localBuffer.capacity() ) {
+            fileReferenceOffset = localBuffer.getInt(); // fileTableOffset
+            fileReferenceSize = localBuffer.getInt(); // fileTableSize
+            if ( Integer.toUnsignedLong( fileReferenceOffset ) + Integer.toUnsignedLong( fileReferenceSize ) > localBuffer.capacity() ) {
                 throw new MalformedCASCStructureException( "logical data extends past end of file" );
             }
 
-            cascReferenceOffset = localBuffer.getInt();
-            cascReferenceSize = localBuffer.getInt();
-            if ( Integer.toUnsignedLong( cascReferenceOffset )
-                    + Integer.toUnsignedLong( cascReferenceSize ) > localBuffer.capacity() ) {
+            cascReferenceOffset = localBuffer.getInt(); // containerTableOffset
+            cascReferenceSize = localBuffer.getInt(); // containerTableSize
+            if ( Integer.toUnsignedLong( cascReferenceOffset ) + Integer.toUnsignedLong( cascReferenceSize ) > localBuffer.capacity() ) {
                 throw new MalformedCASCStructureException( "storage data extends past end of file" );
             }
 
@@ -269,7 +283,8 @@ public class TVFSDecoder {
         storageBuffer = localBuffer.slice();
         localBuffer.clear();
 
-        final List<PathNode> rootNodes = decodeContainer();
+        final List<PathNode> rootNodes = this.decodeContainer();
+
         final TVFSFile tvfsFile = new TVFSFile( version, flags, encodingKeySize, patchKeySize, maximumPathDepth,
                 rootNodes );
 

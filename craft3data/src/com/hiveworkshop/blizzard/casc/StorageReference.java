@@ -3,6 +3,7 @@ package com.hiveworkshop.blizzard.casc;
 import java.util.Map;
 
 /**
+ * 빌드 파일에 저장된 항목 저장 클래스
  * A reference to a file extracted from a configuration file.
  */
 public class StorageReference {
@@ -11,9 +12,21 @@ public class StorageReference {
      */
     private static final String SIZES_SUFFIX = "-size";
 
+    /**
+     * 저장 파일 사이즈
+     */
     private final long storedSize;
+    /** 
+     * 원본 파일 사이즈 
+     */
     private final long size;
+    /**
+     * eKey 압축된 파일의 해시
+     */
     private final Key encodingKey;
+    /**
+     * cKey 원본 파일의 해시
+     */
     private final Key contentKey;
 
     /**
@@ -24,11 +37,12 @@ public class StorageReference {
      * @param configuration 항목 값 Map of configuration file content.
      */
     public StorageReference( final String name, final Map<String, String> configuration ) {
-        final String keys = configuration.get( name );
+
+        final String keys = configuration.get( name ); // "cKey eKey"
         if ( keys == null ) {
             throw new IllegalArgumentException( "name does not exist in configuration" );
         }
-        final String sizes = configuration.get( name + SIZES_SUFFIX );
+        final String sizes = configuration.get( name + SIZES_SUFFIX ); // "originalSize storedSize"
         if ( sizes == null ) {
             throw new IllegalArgumentException( "size missing in configuration" );
         }
@@ -61,7 +75,7 @@ public class StorageReference {
     }
 
     /**
-     * File size.
+     * 원본 파일 사이즈 File size.
      *
      * @return File size in bytes of the file.
      */
@@ -70,7 +84,7 @@ public class StorageReference {
     }
 
     /**
-     * Size of file content in CASC storage.
+     * 저장 파일 사이즈 Size of file content in CASC storage.
      *
      * @return Approximate byte usage of file in CASC storage.
      */

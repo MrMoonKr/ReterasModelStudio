@@ -177,7 +177,7 @@ public class WarcraftIIICASC implements AutoCloseable {
      * Java VM application virtual memory address space. As such memory mapping
      * should only be used with large address aware VMs.
      *
-     * @param installFolder    Warcraft III installation folder.
+     * @param installFolder  설치 루트 디렉토리   Warcraft III installation folder.
      * @param useMemoryMapping If memory mapped IO should be used to read file data.
      * @throws IOException If an exception occurs while mounting.
      */

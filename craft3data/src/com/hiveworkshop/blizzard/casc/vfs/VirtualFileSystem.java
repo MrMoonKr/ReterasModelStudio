@@ -35,6 +35,7 @@ public final class VirtualFileSystem {
      * Can be used to fetch the data of a file.
      */
     public final class PathResult {
+
         private final PathNode node;
         private final byte[][] pathFragments;
 
@@ -376,25 +377,25 @@ public final class VirtualFileSystem {
      * @throws IOException If an exception occurs when loading the file system.
      */
     public VirtualFileSystem( final Storage storage, final Map<String, String> buildConfiguration ) throws IOException {
+
         this.storage = storage;
         this.buildConfiguration = buildConfiguration;
 
         int vfsNumber = 0;
         String configurationKey;
-        while ( buildConfiguration.containsKey(
-                configurationKey = CONFIGURATION_KEY_PREFIX + Integer.toUnsignedString( ++vfsNumber ) ) ) 
+        while ( buildConfiguration.containsKey( configurationKey = CONFIGURATION_KEY_PREFIX + Integer.toUnsignedString( ++vfsNumber ) ) ) 
         {
             System.out.println( "Checking VFS: " + configurationKey );
+
             final com.hiveworkshop.blizzard.casc.StorageReference storageReference = 
-                    new com.hiveworkshop.blizzard.casc.StorageReference(
-                            configurationKey, buildConfiguration );
+                    new com.hiveworkshop.blizzard.casc.StorageReference( configurationKey, buildConfiguration );
+
             tvfsStorageReferences.put( storageReference.getEncodingKey(), storageReference );
         }
 
         // "vfs-root" 데이터 로딩
         final com.hiveworkshop.blizzard.casc.StorageReference rootReference = 
-                new com.hiveworkshop.blizzard.casc.StorageReference(
-                        CONFIGURATION_KEY_PREFIX + ROOT_KEY, buildConfiguration );
+                new com.hiveworkshop.blizzard.casc.StorageReference( CONFIGURATION_KEY_PREFIX + ROOT_KEY, buildConfiguration );
         final ByteBuffer rootBuffer = fetchStoredBuffer( rootReference );
         tvfsRoot = decoder.loadFile( rootBuffer );
 
@@ -455,10 +456,12 @@ public final class VirtualFileSystem {
      *                     decoding path fragments into a path string.
      */
     public List<PathResult> getAllFiles() throws IOException {
+
         final ArrayList<PathResult> pathStringList = new ArrayList<PathResult>();
 
         final int rootCount = tvfsRoot.getRootNodeCount();
-        for ( int rootIndex = 0; rootIndex < rootCount; rootIndex += 1 ) {
+        for ( int rootIndex = 0; rootIndex < rootCount; rootIndex += 1 ) 
+        {
             final PathNode root = tvfsRoot.getRootNode( rootIndex );
             recursiveFilePathRetrieve( new byte[1][0], pathStringList, root );
         }
@@ -475,13 +478,15 @@ public final class VirtualFileSystem {
      * @param currentNode         The child node to process.
      * @throws IOException If an exception occurs when processing the node.
      */
-    private void recursiveFilePathRetrieve( final byte[][] parentPathFragments, final ArrayList<PathResult> resultList,
-            final PathNode currentNode ) throws IOException {
+    private void recursiveFilePathRetrieve( final byte[][] parentPathFragments, 
+            final ArrayList<PathResult> resultList, final PathNode currentNode ) throws IOException 
+    {
         byte[][] currentPathFragments = parentPathFragments;
 
         // process path fragments
         final int fragmentCount = currentNode.getPathFragmentCount();
-        if ( fragmentCount > 0 ) {
+        if ( fragmentCount > 0 ) 
+        {
             int fragmentIndex = 0;
             final byte[] fragment = currentNode.getFragment( fragmentIndex++ );
 
@@ -521,6 +526,7 @@ public final class VirtualFileSystem {
             }
         } 
         else if ( currentNode instanceof FileNode ) {
+
             final FileNode fileNode = ( FileNode )currentNode;
 
             final int fileReferenceCount = fileNode.getFileReferenceCount();
@@ -545,7 +551,8 @@ public final class VirtualFileSystem {
                 resultList.add( new PathResult( currentNode, currentPathFragments ) );
             }
         } 
-        else {
+        else 
+        {
             throw new IllegalArgumentException( "unsupported node type" );
         }
     }
@@ -689,9 +696,10 @@ public final class VirtualFileSystem {
      * @throws IOException If an error occurs when resolving the TVFS file.
      */
     private TVFSFile resolveTVFS( final Key encodingKey ) throws IOException {
+
         TVFSFile tvfsFile = null;
-        final com.hiveworkshop.blizzard.casc.StorageReference storageReference = 
-                tvfsStorageReferences.get( encodingKey );
+
+        final com.hiveworkshop.blizzard.casc.StorageReference storageReference = tvfsStorageReferences.get( encodingKey );
         if ( storageReference != null ) {
             // is a TVFS file of this file system
             synchronized ( this ) {
@@ -705,6 +713,7 @@ public final class VirtualFileSystem {
                 }
             }
         }
+
         return tvfsFile;
     }
 }
