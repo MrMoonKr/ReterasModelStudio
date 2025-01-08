@@ -69,7 +69,14 @@ public class TVFSDecoder {
         return decodeContainer( pathBuffer );
     }
 
+    /**
+     * 폴더 노드를 디코딩합니다.
+     * @param pathBuffer
+     * @return
+     * @throws MalformedCASCStructureException
+     */
     private List<PathNode> decodeContainer( final ByteBuffer pathBuffer ) throws MalformedCASCStructureException {
+
         final ArrayList<PathNode> nodes = new ArrayList<PathNode>();
 
         while ( pathBuffer.hasRemaining() ) {
@@ -81,19 +88,25 @@ public class TVFSDecoder {
     }
 
     private PathNode decodeNode( final ByteBuffer pathBuffer ) throws MalformedCASCStructureException {
+
         final ArrayList<byte[]> pathFragments = new ArrayList<byte[]>();
 
         PathNode node;
-        try {
+        try 
+        {
             int pathStringLength;
             while ( ( pathStringLength = Byte.toUnsignedInt( pathBuffer.get() ) ) != VALUE_PATH_STRING_LENGTH ) {
+                // 폴더 이름을 읽어옵니다.
                 final byte[] pathFragment = new byte[pathStringLength];
                 pathBuffer.get( pathFragment );
+                // 폴더 이름을 리스트에 추가합니다.
                 pathFragments.add( pathFragment );
             }
 
+            // 폴더 플래그를 읽어옵니다.
             final int value = pathBuffer.getInt();
-            if ( ( value & VALUE_CONTAINER_FLAG ) != 0 ) {
+            if ( ( value & VALUE_CONTAINER_FLAG ) != 0 ) // 폴더인 경우
+            {
                 // prefix node
                 final int containerSize = value & ~VALUE_CONTAINER_FLAG;
                 pathBuffer.position( pathBuffer.position() - Integer.BYTES );
@@ -114,13 +127,17 @@ public class TVFSDecoder {
                 final List<PathNode> nodes = decodeContainer( containerBuffer );
 
                 node = new PrefixNode( pathFragments, nodes );
-            } else {
+            } 
+            else // 파일인 경우
+            {
                 // file value
                 final StorageReference[] fileReferences = getFileReferences( value );
 
                 node = new FileNode( pathFragments, Arrays.asList( fileReferences ) );
             }
-        } catch ( final BufferUnderflowException e ) {
+        } 
+        catch ( final BufferUnderflowException e ) 
+        {
             throw new MalformedCASCStructureException( "path stream goes beyond path container" );
         }
 
@@ -179,23 +196,25 @@ public class TVFSDecoder {
 
         final ByteBuffer localBuffer = fileBuffer.slice();
 
-        // check identifier
+        // 파일헤더 읽어옵니다
 
-        if ( localBuffer.remaining() < IDENTIFIER.remaining()
-                || !localBuffer.limit( IDENTIFIER.remaining() ).equals( IDENTIFIER ) ) {
+        // check identifier
+        if ( localBuffer.remaining() < IDENTIFIER.remaining() || 
+                !localBuffer.limit( IDENTIFIER.remaining() ).equals( IDENTIFIER ) ) {
             throw new MalformedCASCStructureException( "missing TVFS identifier" );
         }
 
         // decode header
-
         localBuffer.limit( localBuffer.capacity() );
-        localBuffer.position( IDENTIFIER.remaining() );
+        localBuffer.position( IDENTIFIER.remaining() ); // skip identifier
 
-        try {
+        try 
+        {
             version = localBuffer.get();
             if ( version != 1 ) {
                 throw new UnsupportedOperationException( "unsupported TVFS version: " + version );
             }
+            
             final int headerSize = Byte.toUnsignedInt( localBuffer.get() );
             if ( headerSize > localBuffer.capacity() ) {
                 throw new MalformedCASCStructureException( "TVFS header extends past end of file" );
