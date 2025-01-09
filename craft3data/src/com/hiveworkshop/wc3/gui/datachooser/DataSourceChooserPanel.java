@@ -66,6 +66,7 @@ import com.jtattoo.plaf.hifi.HiFiLookAndFeel;
 import com.jtattoo.plaf.noire.NoireLookAndFeel;
 
 /**
+ * 에셋 제공자 등록 GUI 패널.  
  * Asset Source Registering Panel
  */
 public class DataSourceChooserPanel extends JPanel {
@@ -75,6 +76,7 @@ public class DataSourceChooserPanel extends JPanel {
     private static final ImageIcon FolderIcon   = RMSIcons.loadDataSourceImageIcon( "Folder.png" );
 
     private final List<DataSourceDescriptor> dataSourceDescriptors;
+
     private String wcDirectory;
     private final JFileChooser fileChooser;
     private final DefaultMutableTreeNode root;
@@ -135,6 +137,7 @@ public class DataSourceChooserPanel extends JPanel {
                 }
             }
         } );
+
         final JButton addDefaultCascPrefixes = new JButton( "Add Default CASC Mod" );
         addDefaultCascPrefixes.addActionListener( new ActionListener() {
             @Override
@@ -181,6 +184,7 @@ public class DataSourceChooserPanel extends JPanel {
                 }
             }
         } );
+
         final JButton deleteSelection = new JButton( "Delete Selection" );
         deleteSelection.addActionListener( new ActionListener() {
 
@@ -318,7 +322,6 @@ public class DataSourceChooserPanel extends JPanel {
         // 기본값으로 리셋 버튼
         final JButton resetAllToDefaults = new JButton( "Reset to Defaults" );
         resetAllToDefaults.addActionListener( new ActionListener() {
-
             @Override
             public void actionPerformed( final ActionEvent e ) {
                 loadDefaults( null );
@@ -338,8 +341,11 @@ public class DataSourceChooserPanel extends JPanel {
                     if ( selectedFile != null ) {
                         CascDataSource.Product product = Product.WARCRAFT_III;
                         final int optionChoice = JOptionPane.showOptionDialog( DataSourceChooserPanel.this,
-                                "Choose version", "Version", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                                null, new Object[] { "Warcraft III", "Warcraft III Public Test" },
+                                "Choose version", 
+                                "Version", 
+                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                                null, 
+                                new Object[] { "Warcraft III", "Warcraft III Public Test" },
                                 "Warcraft III Public Test" );
                         if ( ( optionChoice < 0 ) || ( optionChoice > 1 ) ) {
                             return;
@@ -348,8 +354,8 @@ public class DataSourceChooserPanel extends JPanel {
                             product = Product.WARCRAFT_III_PUBLIC_TEST;
                         }
 
-                        dataSourceDescriptors.add( new CascDataSourceDescriptor( selectedFile.getPath(),
-                                new ArrayList<String>(), product ) );
+                        dataSourceDescriptors.add( 
+                                new CascDataSourceDescriptor( selectedFile.getPath(), new ArrayList<String>(), product ) );
 
                         reloadTree();
                     }
@@ -390,6 +396,7 @@ public class DataSourceChooserPanel extends JPanel {
                 }
             }
         } );
+
         final JLabel separatorLabel = new JLabel( "-----" );
         separatorLabel.setAlignmentX( JLabel.CENTER_ALIGNMENT );
         final JLabel separatorLabel2 = new JLabel( "-----" );
@@ -438,6 +445,7 @@ public class DataSourceChooserPanel extends JPanel {
                 moveSelectionDown.setEnabled( selectionPath != null );
             }
         } );
+
         final JScrollPane dstScrollpane = new JScrollPane( dataSourceTree );
         dstScrollpane.setPreferredSize( new Dimension( 500, 400 ) );
 
@@ -486,11 +494,15 @@ public class DataSourceChooserPanel extends JPanel {
 
         this.dataSourceTree.setCellRenderer( new DefaultTreeCellRenderer() {
             @Override
-            public Component getTreeCellRendererComponent( final JTree tree, final Object value, 
-                    final boolean sel, final boolean expanded, final boolean leaf, final int row, final boolean hasFocus ) 
+            public Component getTreeCellRendererComponent( final JTree tree, 
+                    final Object value, 
+                    final boolean sel, final boolean expanded, final boolean leaf, 
+                    final int row, 
+                    final boolean hasFocus ) 
             {
                 final Component treeCellRendererComponent = super.getTreeCellRendererComponent( tree, value, 
                         sel, expanded, leaf, row, hasFocus );
+
                 final JLabel label = ( JLabel )treeCellRendererComponent;
 
                 if ( value instanceof DataSourceDescTreeNode ) {
@@ -505,12 +517,14 @@ public class DataSourceChooserPanel extends JPanel {
                         label.setIcon( null );
                     }
                 }
+
                 return treeCellRendererComponent;
             }
         } );
 
         setLayout( layout );
-        loadDefaults( dataSourceDescriptorDefaults );
+
+        this.loadDefaults( dataSourceDescriptorDefaults );
     }
 
     private void enterSDMode() {
@@ -662,14 +676,17 @@ public class DataSourceChooserPanel extends JPanel {
     }
 
     private void reloadTree() {
+
         final TreePath selectionPath = dataSourceTree.getSelectionPath();
         int selectedRow = -1;
         if ( selectionPath != null ) {
             selectedRow = dataSourceTree.getRowForPath( selectionPath );
         }
+
         for ( int i = root.getChildCount() - 1; i >= 0; i-- ) {
             model.removeNodeFromParent( ( MutableTreeNode )root.getChildAt( i ) );
         }
+
         for ( final DataSourceDescriptor descriptor : dataSourceDescriptors ) {
             final DataSourceDescTreeNode newChild = new DataSourceDescTreeNode( descriptor );
             if ( descriptor instanceof CascDataSourceDescriptor ) {
@@ -693,7 +710,7 @@ public class DataSourceChooserPanel extends JPanel {
     }
 
     public List<DataSourceDescriptor> getDataSourceDescriptors() {
-        return dataSourceDescriptors;
+        return this.dataSourceDescriptors;
     }
 
     private static final class DataSourceDescTreeNode extends DefaultMutableTreeNode {
@@ -724,11 +741,13 @@ public class DataSourceChooserPanel extends JPanel {
         dataSourceChooserFrame.setVisible( true );
     }
 
-    private void addSpecificCASCPrefix( final Path installPathPath, final CascDataSourceDescriptor dataSourceDesc ) {
+    private void addSpecificCASCPrefix( final Path installPathPath, final CascDataSourceDescriptor dataSourceDesc ) 
+    {
         // It's CASC. Now the question: what prefixes do we use?
-        try {
-            final WarcraftIIICASC tempCascReader = new WarcraftIIICASC( installPathPath, true,
-                    dataSourceDesc.getProduct().getKey() );
+        try 
+        {
+            final WarcraftIIICASC tempCascReader = new WarcraftIIICASC( installPathPath, true, dataSourceDesc.getProduct().getKey() );
+
             final DefaultComboBoxModel<String> prefixes = new DefaultComboBoxModel<String>();
             try {
                 final FileSystem rootFileSystem = tempCascReader.getRootFileSystem();
@@ -755,7 +774,8 @@ public class DataSourceChooserPanel extends JPanel {
                     dataSourceDesc.addPrefix( newPrefixName );
                 }
             }
-        } catch ( final Exception e1 ) {
+        } 
+        catch ( final Exception e1 ) {
             ExceptionPopup.display( e1 );
             e1.printStackTrace();
         }
@@ -770,7 +790,8 @@ public class DataSourceChooserPanel extends JPanel {
         String launcherDbLocale = null;
         String originalInstallLocale = null;
         List<String> launcherDBLang = null;
-        try {
+        try 
+        {
             launcherDBLang = Files.readAllLines( installPathPath.resolve( "Launcher.db" ) );
         } 
         catch ( final Exception e1 ) {
@@ -783,13 +804,14 @@ public class DataSourceChooserPanel extends JPanel {
                 }
             }
         }
-        try {
+        try 
+        {
             final WarcraftIIICASC tempCascReader = new WarcraftIIICASC( installPathPath,
                     true,
                     dataSourceDesc.getProduct().getKey() );
-            try {
-                final String tags = tempCascReader.getBuildInfo().getField( tempCascReader.getActiveRecordIndex(),
-                        "Tags" );
+            try 
+            {
+                final String tags = tempCascReader.getBuildInfo().getField( tempCascReader.getActiveRecordIndex(), "Tags" );
                 final String[] splitTags = tags.split( "\\?" );
                 for ( final String splitTag : splitTags ) {
                     final String trimmedTag = splitTag.trim();
@@ -804,21 +826,13 @@ public class DataSourceChooserPanel extends JPanel {
                         }
                     }
                 }
-                // if (originalInstallLocale == null) {
-                // locale = launcherDbLocale;
-                // } else if ((launcherDbLocale == null) && (originalInstallLocale != null)) {
-                // locale = originalInstallLocale;
-                // } else if ((launcherDbLocale != null) && (originalInstallLocale != null)
-                // && originalInstallLocale.equals(launcherDbLocale)) {
-                // locale = launcherDbLocale;
-                // }
+
                 SupportedCascPatchFormat patchFormat;
                 final FileSystem rootFileSystem = tempCascReader.getRootFileSystem();
                 if ( rootFileSystem.isFile( "war3.mpq\\units\\unitdata.slk" ) ) {
                     patchFormat = SupportedCascPatchFormat.PATCH130;
                 } 
-                else if ( tempCascReader.getRootFileSystem()
-                        .isFile( "war3.w3mod\\_hd.w3mod\\units\\human\\footman\\footman.mdx" ) ) {
+                else if ( tempCascReader.getRootFileSystem().isFile( "war3.w3mod\\_hd.w3mod\\units\\human\\footman\\footman.mdx" ) ) {
                     patchFormat = SupportedCascPatchFormat.PATCH132;
                 } 
                 else if ( tempCascReader.getRootFileSystem().isFile( "war3.w3mod\\units\\unitdata.slk" ) ) {
@@ -852,9 +866,11 @@ public class DataSourceChooserPanel extends JPanel {
                         }
                     }
                     if ( localeOptions.isEmpty() ) {
-                        localeOptions.addAll( Arrays.asList( new String[] { "zhCN", "ruRU", "esES", "itIT", "zhTW",
+                        localeOptions.addAll( Arrays.asList( new String[] { 
+                                "zhCN", "ruRU", "esES", "itIT", "zhTW",
                                 "frFR", "enUS", "koKR", "deDE", "plPL" } ) );
                     }
+
                     final JPanel userChooseLocalePanel = new JPanel();
                     userChooseLocalePanel.setLayout( new GridLayout( localeOptions.size() + 5, 1 ) );
                     userChooseLocalePanel.add( new JLabel( "Originally installed locale: " + originalInstallLocale
@@ -964,10 +980,12 @@ public class DataSourceChooserPanel extends JPanel {
                     defaultPrefixes = new ArrayList<>( Arrays.asList( prefixes ) );
                     break;
                 }
+
                 for ( final String prefix : defaultPrefixes ) {
                     dataSourceDesc.addPrefix( prefix );
                 }
-            } finally {
+            } 
+            finally {
                 tempCascReader.close();
             }
         } 

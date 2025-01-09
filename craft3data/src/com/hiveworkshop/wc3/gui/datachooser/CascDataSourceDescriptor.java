@@ -8,96 +8,91 @@ import java.util.Objects;
 import com.hiveworkshop.wc3.gui.datachooser.CascDataSource.Product;
 
 /**
- * CASC data source descriptor
+ * CASC 기반 에셋 데이터 제공자 팩토리
  */
 public class CascDataSourceDescriptor implements DataSourceDescriptor {
-	/**
-	 * Generated serial id
-	 */
-	private static final long serialVersionUID = 832549098549298820L;
 
-	/**
-	 * Game installed root path
-	 */
-	private final String gameInstallPath;
-	private final List<String> prefixes;
-	private final CascDataSource.Product product;
+    private static final long serialVersionUID = 832549098549298820L;
 
-	public CascDataSourceDescriptor( final String gameInstallPath, 
-			final List<String> prefixes,
-			CascDataSource.Product product ) {
-		this.gameInstallPath = gameInstallPath;
-		this.prefixes = prefixes;
-		this.product = product;
-	}
+    private final String gameInstallPath;
+    private final List<String> prefixes;
+    private final CascDataSource.Product product;
 
-	@Override
-	public DataSource createDataSource() {
-		CascDataSource.Product product = this.product;
-		if ( product == null ) {
-			product = Product.WARCRAFT_III;
-		}
-		return new CascDataSource( gameInstallPath, prefixes.toArray( new String[prefixes.size()] ), product );
-	}
+    public CascDataSourceDescriptor( final String gameInstallPath, final List<String> prefixes, CascDataSource.Product product ) {
+        this.gameInstallPath = gameInstallPath;
+        this.prefixes = prefixes;
+        this.product = product;
+    }
 
-	@Override
-	public String getDisplayName() {
-		return "CASC: " + gameInstallPath + " (" + product + ")";
-	}
+    @Override
+    public DataSource createDataSource() {
+        CascDataSource.Product product = this.product;
+        if ( product == null ) {
+            product = Product.WARCRAFT_III;
+        }
 
-	public void addPrefix( final String prefix ) {
-		this.prefixes.add( prefix );
-	}
+        return new CascDataSource( gameInstallPath, prefixes.toArray( new String[prefixes.size()] ), product );
+    }
 
-	public void deletePrefix( final int index ) {
-		prefixes.remove( index );
-	}
+    @Override
+    public String getDisplayName() {
+        return "CASC: " + gameInstallPath + " (" + product + ")";
+    }
 
-	public void movePrefixUp( final int index ) {
-		if ( index > 0 ) {
-			Collections.swap( prefixes, index, index - 1 );
-		}
-	}
+    public void addPrefix( final String prefix ) {
+        this.prefixes.add( prefix );
+    }
 
-	public void movePrefixDown( final int index ) {
-		if ( index < ( prefixes.size() - 1 ) ) {
-			Collections.swap( prefixes, index, index + 1 );
-		}
-	}
+    public void deletePrefix( final int index ) {
+        prefixes.remove( index );
+    }
 
-	public String getGameInstallPath() {
-		return gameInstallPath;
-	}
+    public void movePrefixUp( final int index ) {
+        if ( index > 0 ) {
+            Collections.swap( prefixes, index, index - 1 );
+        }
+    }
 
-	public List<String> getPrefixes() {
-		return prefixes;
-	}
+    public void movePrefixDown( final int index ) {
+        if ( index < ( prefixes.size() - 1 ) ) {
+            Collections.swap( prefixes, index, index + 1 );
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( gameInstallPath, prefixes, product );
-	}
+    public String getGameInstallPath() {
+        return gameInstallPath;
+    }
 
-	@Override
-	public boolean equals( Object obj ) {
-		if ( this == obj )
-			return true;
-		if ( obj == null )
-			return false;
-		if ( getClass() != obj.getClass() )
-			return false;
-		CascDataSourceDescriptor other = ( CascDataSourceDescriptor )obj;
-		return Objects.equals( gameInstallPath, other.gameInstallPath ) && 
-				Objects.equals( prefixes, other.prefixes ) && 
-				product == other.product;
-	}
+    public List<String> getPrefixes() {
+        return prefixes;
+    }
 
-	@Override
-	public DataSourceDescriptor duplicate() {
-		return new CascDataSourceDescriptor( gameInstallPath, new ArrayList<>( prefixes ), product );
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash( gameInstallPath, prefixes, product );
+    }
 
-	public CascDataSource.Product getProduct() {
-		return product;
-	}
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+
+        CascDataSourceDescriptor other = ( CascDataSourceDescriptor )obj;
+        return Objects.equals( gameInstallPath, other.gameInstallPath ) && 
+                Objects.equals( prefixes, other.prefixes ) && 
+                product == other.product;
+    }
+
+    @Override
+    public DataSourceDescriptor duplicate() {
+        return new CascDataSourceDescriptor( gameInstallPath, new ArrayList<>( prefixes ), product );
+    }
+
+    public CascDataSource.Product getProduct() {
+        return product;
+    }
 }

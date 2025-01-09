@@ -54,6 +54,8 @@ public class GetCascLanguageList {
                     print( "   " + category, ANSI_YELLOW );
                 }
             }
+
+            casc.close();
         } 
         catch ( final IOException e ) {
             // TODO Auto-generated catch block

@@ -835,57 +835,58 @@ public class MainPanel extends JPanel
 							new JScrollPane( unitEditorTree ) ) ) );
 		}
 	};
-	/**
-	 * "Doodad Browser" 메뉴 클릭 액션 핸들러
-	 */
-	AbstractAction openDoodadViewerAction = new AbstractAction( "Open Doodad Browser" ) {
-		@Override
-		public void actionPerformed( final ActionEvent e ) {
-			final UnitEditorTree unitEditorTree = new UnitEditorTree( getDoodadData(),
-					new DoodadTabTreeBrowserBuilder(), getUnitEditorSettings(), WorldEditorDataType.DOODADS );
-			unitEditorTree.selectFirstUnit();
-			// final FloatingWindow floatingWindow =
-			// rootWindow.createFloatingWindow(rootWindow.getLocation(),
-			// mpqBrowser.getPreferredSize(),
-			// new View("MPQ Browser",
-			// new ImageIcon(MainFrame.frame.getIconImage().getScaledInstance(16, 16,
-			// Image.SCALE_FAST)),
-			// mpqBrowser));
-			// floatingWindow.getTopLevelAncestor().setVisible(true);
-			unitEditorTree.addMouseListener( new MouseAdapter() {
-				@Override
-				public void mouseClicked( final MouseEvent e ) {
-					try {
-						if ( e.getClickCount() >= 2 ) {
-							final TreePath currentUnitTreePath = unitEditorTree.getSelectionPath();
-							if ( currentUnitTreePath != null ) {
-								final DefaultMutableTreeNode o = ( DefaultMutableTreeNode )currentUnitTreePath
-										.getLastPathComponent();
-								if ( o.getUserObject() instanceof MutableGameObject ) {
-									final MutableGameObject obj = ( MutableGameObject )o.getUserObject();
 
-									SaveProfile.get().addRecentFetch( new RecentFetch( RecentFetchType.DOODAD_BROWSER,
-											obj.getAlias().asStringValue(), obj.getName(), null ) );
-									updateRecent();
+    /**
+     * "Doodad Browser" 메뉴 클릭 액션 핸들러
+     */
+    AbstractAction openDoodadViewerAction = new AbstractAction( "Open Doodad Browser" ) {
+        @Override
+        public void actionPerformed( final ActionEvent e ) {
 
-									loadStreamMdxForEachDoodadVariation( obj );
-								}
-							}
-						}
-					} 
-					catch ( final Exception exc ) {
-						exc.printStackTrace();
-						ExceptionPopup.display( exc );
-					}
-				}
-			} );
-			rootWindow.setWindow( new SplitWindow( true, 0.75f, rootWindow.getWindow(),
-					new View( "Doodad Browser",
-							new ImageIcon(
-									MainFrame.frame.getIconImage().getScaledInstance( 16, 16, Image.SCALE_FAST ) ),
-							new JScrollPane( unitEditorTree ) ) ) );
-		}
-	};
+            final UnitEditorTree unitEditorTree = new UnitEditorTree( getDoodadData(),
+                    new DoodadTabTreeBrowserBuilder(), getUnitEditorSettings(), WorldEditorDataType.DOODADS );
+
+            unitEditorTree.selectFirstUnit();
+            unitEditorTree.addMouseListener( new MouseAdapter() {
+                @Override
+                public void mouseClicked( final MouseEvent e ) {
+                    try 
+                    {
+                        if ( e.getClickCount() >= 2 ) {
+                            final TreePath currentUnitTreePath = unitEditorTree.getSelectionPath();
+                            if ( currentUnitTreePath != null ) {
+                                final DefaultMutableTreeNode o = ( DefaultMutableTreeNode )currentUnitTreePath
+                                        .getLastPathComponent();
+                                if ( o.getUserObject() instanceof MutableGameObject ) {
+                                    final MutableGameObject obj = ( MutableGameObject )o.getUserObject();
+
+                                    SaveProfile.get().addRecentFetch( new RecentFetch( RecentFetchType.DOODAD_BROWSER,
+                                            obj.getAlias().asStringValue(), obj.getName(), null ) );
+                                    updateRecent();
+
+                                    loadStreamMdxForEachDoodadVariation( obj );
+                                }
+                            }
+                        }
+                    } 
+                    catch ( final Exception exc ) {
+                        exc.printStackTrace();
+                        ExceptionPopup.display( exc );
+                    }
+                }
+            } );
+
+            rootWindow.setWindow( new SplitWindow( true, 0.75f, 
+                    rootWindow.getWindow(),
+                    new View( "Doodad Browser",
+                            new ImageIcon( MainFrame.frame.getIconImage().getScaledInstance( 16, 16, Image.SCALE_FAST ) ),
+                            new JScrollPane( unitEditorTree ) ) ) );
+        }
+    };
+
+    /**
+     * "Hive Browser" 메뉴 클릭 액션 핸들러
+     */
 	AbstractAction openHiveViewerAction = new AbstractAction( "Open Hive Browser" ) {
 		@Override
 		public void actionPerformed( final ActionEvent e ) {
@@ -940,6 +941,7 @@ public class MainPanel extends JPanel
 									panel ) ) );
 		}
 	};
+
 	private final Runnable animationModeDeleteListener = new Runnable() {
 		@Override
 		public void run() {
@@ -2843,15 +2845,15 @@ public class MainPanel extends JPanel
 		unitViewer.addActionListener( openUnitViewerAction );
 		browsersMenu.add( unitViewer );
 
-		final JMenuItem doodadViewer = new JMenuItem( "Doodad Browser" );
-		doodadViewer.setMnemonic( KeyEvent.VK_D );
-		doodadViewer.addActionListener( openDoodadViewerAction );
-		browsersMenu.add( doodadViewer );
+        final JMenuItem doodadViewer = new JMenuItem( "Doodad Browser" );
+        doodadViewer.setMnemonic( KeyEvent.VK_D );
+        doodadViewer.addActionListener( openDoodadViewerAction );
+        browsersMenu.add( doodadViewer );
 
-		hiveViewer = new JMenuItem( "Hive Browser" );
-		hiveViewer.setMnemonic( KeyEvent.VK_H );
-		hiveViewer.addActionListener( openHiveViewerAction );
-		// browsersMenu.add(hiveViewer);
+        hiveViewer = new JMenuItem( "Hive Browser" );
+        hiveViewer.setMnemonic( KeyEvent.VK_H );
+        hiveViewer.addActionListener( openHiveViewerAction );
+        // browsersMenu.add(hiveViewer);
 
 		windowMenu.addSeparator();
 
