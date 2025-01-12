@@ -1,6 +1,6 @@
 package com.hiveworkshop.blizzard.casc.vfs;
 
-import java.io.Console;
+//import java.io.Console;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.BufferOverflowException;

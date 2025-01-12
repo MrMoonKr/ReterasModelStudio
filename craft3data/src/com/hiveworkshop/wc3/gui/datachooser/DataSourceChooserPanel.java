@@ -71,9 +71,9 @@ import com.jtattoo.plaf.noire.NoireLookAndFeel;
  */
 public class DataSourceChooserPanel extends JPanel {
 
-    private static final ImageIcon CASCIcon     = RMSIcons.loadDataSourceImageIcon( "CASC.png" );
-    private static final ImageIcon MPQIcon      = RMSIcons.loadDataSourceImageIcon( "MPQ.png" );
-    private static final ImageIcon FolderIcon   = RMSIcons.loadDataSourceImageIcon( "Folder.png" );
+    private static final ImageIcon CASCIcon     = null; //RMSIcons.loadDataSourceImageIcon( "CASC.png" );
+    private static final ImageIcon MPQIcon      = null; //RMSIcons.loadDataSourceImageIcon( "MPQ.png" );
+    private static final ImageIcon FolderIcon   = null; //RMSIcons.loadDataSourceImageIcon( "Folder.png" );
 
     private final List<DataSourceDescriptor> dataSourceDescriptors;
 

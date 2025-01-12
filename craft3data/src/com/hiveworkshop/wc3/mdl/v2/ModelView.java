@@ -10,23 +10,23 @@ import com.hiveworkshop.wc3.mdl.v2.visitor.ModelVisitor;
 
 public interface ModelView {
 
-	EditableModel getModel();
+    EditableModel getModel();
 
-	SetView<Geoset> getVisibleGeosets();
+    SetView<Geoset> getVisibleGeosets();
 
-	SetView<Geoset> getEditableGeosets();
+    SetView<Geoset> getEditableGeosets();
 
-	SetView<IdObject> getEditableIdObjects();
+    SetView<IdObject> getEditableIdObjects();
 
-	SetView<Camera> getEditableCameras();
+    SetView<Camera> getEditableCameras();
 
-	void addStateListener(ModelViewStateListener listener);
+    void addStateListener( ModelViewStateListener listener );
 
-	void visit(ModelVisitor visitor);
+    void visit( ModelVisitor visitor );
 
-	void visitMesh(MeshVisitor visitor);
+    void visitMesh( MeshVisitor visitor );
 
-	Geoset getHighlightedGeoset();
+    Geoset getHighlightedGeoset();
 
-	IdObject getHighlightedNode();
+    IdObject getHighlightedNode();
 }

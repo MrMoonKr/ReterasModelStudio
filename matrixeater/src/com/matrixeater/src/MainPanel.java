@@ -4455,7 +4455,8 @@ public class MainPanel extends JPanel
 	public void actionPerformed( final ActionEvent e ) {
 		// Open, off of the file menu:
 		refreshUndo();
-		try {
+		try 
+        {
 			if ( e.getSource() == newModel ) {
 				newModel();
 			} else if ( e.getSource() == open ) {
@@ -5119,9 +5120,8 @@ public class MainPanel extends JPanel
 			// }
 			// repaint();
 			// }
-		} catch (
-
-		final Exception exc ) {
+		} 
+        catch ( final Exception exc ) {
 			ExceptionPopup.display( exc );
 		}
 	}
