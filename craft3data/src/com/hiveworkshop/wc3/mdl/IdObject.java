@@ -16,282 +16,288 @@ import com.hiveworkshop.wc3.mdl.v2.visitor.IdObjectVisitor;
 import com.hiveworkshop.wc3.mdx.Node;
 
 /**
+ * 트리 구조 형태의 노드 객체
  * Write a description of class ObjectId here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
 public abstract class IdObject extends AbstractAnimatedNode implements Named {
-	public static final int DEFAULT_CLICK_RADIUS = 8;
 
-	public static enum NodeFlags {
-		DONTINHERIT_TRANSLATION("DontInherit { Translation }"), DONTINHERIT_SCALING("DontInherit { Scaling }"),
-		DONTINHERIT_ROTATION("DontInherit { Rotation }"), BILLBOARDED("Billboarded"),
-		BILLBOARD_LOCK_X("BillboardedLockX", "BillboardLockX"), BILLBOARD_LOCK_Y("BillboardedLockY", "BillboardLockY"),
-		BILLBOARD_LOCK_Z("BillboardedLockZ", "BillboardLockZ"), CAMERA_ANCHORED("CameraAnchored");
+    public static final int DEFAULT_CLICK_RADIUS = 8;
 
-		String mdlText;
-		private String[] otherAcceptedStrings;
+    public static enum NodeFlags {
+        DONTINHERIT_TRANSLATION( "DontInherit { Translation }" ), DONTINHERIT_SCALING( "DontInherit { Scaling }" ),
+        DONTINHERIT_ROTATION( "DontInherit { Rotation }" ), BILLBOARDED( "Billboarded" ),
+        BILLBOARD_LOCK_X( "BillboardedLockX", "BillboardLockX" ),
+        BILLBOARD_LOCK_Y( "BillboardedLockY", "BillboardLockY" ),
+        BILLBOARD_LOCK_Z( "BillboardedLockZ", "BillboardLockZ" ), CAMERA_ANCHORED( "CameraAnchored" );
 
-		NodeFlags(final String str) {
-			this.mdlText = str;
-		}
+        String mdlText;
+        private String[] otherAcceptedStrings;
 
-		NodeFlags(final String str, final String... otherAcceptedStrings) {
-			this.mdlText = str;
-			this.otherAcceptedStrings = otherAcceptedStrings;
-		}
+        NodeFlags( final String str ) {
+            this.mdlText = str;
+        }
 
-		public boolean matches(final String text) {
-			if (mdlText.equals(text)) {
-				return true;
-			}
-			if (otherAcceptedStrings != null) {
-				for (final String otherAcceptedString : otherAcceptedStrings) {
-					if (otherAcceptedString.equals(text)) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+        NodeFlags( final String str, final String... otherAcceptedStrings ) {
+            this.mdlText = str;
+            this.otherAcceptedStrings = otherAcceptedStrings;
+        }
 
-		public String getMdlText() {
-			return mdlText;
-		}
+        public boolean matches( final String text ) {
+            if ( mdlText.equals( text ) ) {
+                return true;
+            }
+            if ( otherAcceptedStrings != null ) {
+                for ( final String otherAcceptedString : otherAcceptedStrings ) {
+                    if ( otherAcceptedString.equals( text ) ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
-		public static NodeFlags fromId(final int id) {
-			return values()[id];
-		}
-	}
+        public String getMdlText() {
+            return mdlText;
+        }
 
-	protected String name;
-	protected Vertex pivotPoint;
-	protected int objectId = -1;
-	protected int parentId = -1;
-	protected IdObject parent;
-	private final List<IdObject> childrenNodes = new ArrayList<>();
-	protected float[] bindPose;
+        public static NodeFlags fromId( final int id ) {
+            return values()[id];
+        }
+    }
 
-	public void setName(final String text) {
-		name = text;
-	}
+    protected String            name;
+    protected Vertex            pivotPoint;
+    protected int               objectId = -1;
+    protected int               parentId = -1;
+    protected IdObject          parent;
+    private final List<IdObject> childrenNodes = new ArrayList<>();
+    protected float[]           bindPose;
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    public void setName( final String text ) {
+        name = text;
+    }
 
-	public IdObject() {
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	}
+    public IdObject() {
 
-	public IdObject(final IdObject host) {
-		name = host.name;
-		pivotPoint = host.pivotPoint;
-		objectId = host.objectId;
-		parentId = host.parentId;
-		setParent(host.parent);
-	}
+    }
 
-	public abstract void printTo(PrintWriter writer);
+    public IdObject( final IdObject host ) {
+        name = host.name;
+        pivotPoint = host.pivotPoint;
+        objectId = host.objectId;
+        parentId = host.parentId;
+        setParent( host.parent );
+    }
 
-	public void setPivotPoint(final Vertex p) {
-		pivotPoint = p;
-	}
+    public abstract void printTo( PrintWriter writer );
 
-	public void setParent(final IdObject p) {
-		if (parent != null) {
-			parent.childrenNodes.remove(this);
-		}
-		parent = p;
-		if (parent != null) {
-			parent.childrenNodes.add(this);
-		}
-	}
+    public void setPivotPoint( final Vertex p ) {
+        pivotPoint = p;
+    }
 
-	public IdObject copy() {
-		return null;
-	}
+    public void setParent( final IdObject p ) {
+        if ( parent != null ) {
+            parent.childrenNodes.remove( this );
+        }
+        parent = p;
+        if ( parent != null ) {
+            parent.childrenNodes.add( this );
+        }
+    }
 
-	public boolean childOf(final IdObject other) {
-		if (parent != null) {
-			if (parent == other) {
-				return true;
-			} else {
-				return parent.childOf(other);
-			}
-		}
-		return false;
-	}
+    public IdObject copy() {
+        return null;
+    }
 
-	public abstract double getClickRadius(CoordinateSystem coordinateSystem);
+    public boolean childOf( final IdObject other ) {
+        if ( parent != null ) {
+            if ( parent == other ) {
+                return true;
+            } else {
+                return parent.childOf( other );
+            }
+        }
+        return false;
+    }
 
-	public boolean parentOf(final IdObject other, final HashMap<IdObject, ArrayList<IdObject>> childMap) {
-		final ArrayList<IdObject> children = childMap.get(this);
-		if (children != null) {
-			if (children.contains(other)) {
-				return true;
-			} else {
-				boolean deepChild = false;
-				for (int i = 0; !deepChild && (i < children.size()); i++) {
-					deepChild = children.get(i).parentOf(other, childMap);
-				}
-				return deepChild;
-			}
-		}
-		return false;
-	}
+    public abstract double getClickRadius( CoordinateSystem coordinateSystem );
 
-	public ArrayList<IdObject> getAllChildren(final HashMap<IdObject, ArrayList<IdObject>> childMap) {
-		final ArrayList<IdObject> children = childMap.get(this);
-		final ArrayList<IdObject> allChildren = new ArrayList<>();
-		if (children != null) {
-			for (int i = 0; i < children.size(); i++) {
-				final IdObject child = children.get(i);
-				if (!allChildren.contains(child)) {
-					allChildren.add(child);
-					allChildren.addAll(child.getAllChildren(childMap));
-				}
-			}
-		}
+    public boolean parentOf( final IdObject other, final HashMap<IdObject, ArrayList<IdObject>> childMap ) {
 
-		return allChildren;
-	}
+        final ArrayList<IdObject> children = childMap.get( this );
+        if ( children != null ) {
+            if ( children.contains( other ) ) {
+                return true;
+            } 
+            else {
+                boolean deepChild = false;
+                for ( int i = 0; !deepChild && ( i < children.size() ); i++ ) {
+                    deepChild = children.get( i ).parentOf( other, childMap );
+                }
+                return deepChild;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean hasFlag(final NodeFlags flag) {
-		for (final String flagInThisObject : getFlags()) {
-			if (flag.matches(flagInThisObject)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public ArrayList<IdObject> getAllChildren( final HashMap<IdObject, ArrayList<IdObject>> childMap ) {
 
-	public abstract void flipOver(byte axis);
+        final ArrayList<IdObject> children = childMap.get( this );
+        final ArrayList<IdObject> allChildren = new ArrayList<>();
+        if ( children != null ) {
+            for ( int i = 0; i < children.size(); i++ ) {
+                final IdObject child = children.get( i );
+                if ( !allChildren.contains( child ) ) {
+                    allChildren.add( child );
+                    allChildren.addAll( child.getAllChildren( childMap ) );
+                }
+            }
+        }
 
-	/**
-	 *
-	 *
-	 * @return The Object ID
-	 * @deprecated Note that all object IDs are deleted and regenerated at save
-	 */
-	@Deprecated
-	public int getObjectId() {
-		return objectId;
-	}
+        return allChildren;
+    }
 
-	/**
-	 * @param objectId New object ID value
-	 * @deprecated Note that all object IDs are deleted and regenerated at save
-	 */
-	@Deprecated
-	public void setObjectId(final int objectId) {
-		this.objectId = objectId;
-	}
+    @Override
+    public boolean hasFlag( final NodeFlags flag ) {
+        for ( final String flagInThisObject : getFlags() ) {
+            if ( flag.matches( flagInThisObject ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * @return Parent ID
-	 * @deprecated Note that all object IDs are deleted and regenerated at save
-	 */
-	@Deprecated
-	public int getParentId() {
-		return parentId;
-	}
+    public abstract void flipOver( byte axis );
 
-	/**
-	 * @param parentId new Parent ID
-	 * @deprecated IF UNSURE, YOU SHOULD USE setParent(), note that all object IDs
-	 *             are deleted and regenerated at save
-	 */
-	@Deprecated
-	public void setParentId(final int parentId) {
-		this.parentId = parentId;
-	}
+    /**
+     *
+     *
+     * @return The Object ID
+     * @deprecated Note that all object IDs are deleted and regenerated at save
+     */
+    @Deprecated
+    public int getObjectId() {
+        return objectId;
+    }
 
-	protected void loadFrom(final Node node) {
-		// ----- Convert Base NODE to "IDOBJECT" -----
-		name = node.name;
-		parentId = node.parentId;
-		objectId = node.objectId;
-		int shift = 0;
-		for (final IdObject.NodeFlags flag : IdObject.NodeFlags.values()) {
-			if (((node.flags >>> shift) & 1) == 1) {
-				add(flag.getMdlText());
-			}
-			shift++;
-		}
-		// translations next
-		if (node.geosetTranslation != null) {
-			add(new AnimFlag(node.geosetTranslation));
-		}
-		if (node.geosetScaling != null) {
-			add(new AnimFlag(node.geosetScaling));
-		}
-		if (node.geosetRotation != null) {
-			add(new AnimFlag(node.geosetRotation));
-		}
-		// ----- End Base NODE to "IDOBJECT" -----
-	}
+    /**
+     * @param objectId New object ID value
+     * @deprecated Note that all object IDs are deleted and regenerated at save
+     */
+    @Deprecated
+    public void setObjectId( final int objectId ) {
+        this.objectId = objectId;
+    }
 
-	@Override
-	public Vertex getPivotPoint() {
-		return pivotPoint;
-	}
+    /**
+     * @return Parent ID
+     * @deprecated Note that all object IDs are deleted and regenerated at save
+     */
+    @Deprecated
+    public int getParentId() {
+        return parentId;
+    }
 
-	@Override
-	public IdObject getParent() {
-		return parent;
-	}
+    /**
+     * @param parentId new Parent ID
+     * @deprecated IF UNSURE, YOU SHOULD USE setParent(), note that all object IDs
+     *             are deleted and regenerated at save
+     */
+    @Deprecated
+    public void setParentId( final int parentId ) {
+        this.parentId = parentId;
+    }
 
-	@Override
-	public abstract void add(AnimFlag af);
+    protected void loadFrom( final Node node ) {
+        // ----- Convert Base NODE to "IDOBJECT" -----
+        name        = node.name;
+        parentId    = node.parentId;
+        objectId    = node.objectId;
+        int shift   = 0;
+        for ( final IdObject.NodeFlags flag : IdObject.NodeFlags.values() ) {
+            if ( ( ( node.flags >>> shift ) & 1 ) == 1 ) {
+                add( flag.getMdlText() );
+            }
+            shift++;
+        }
+        // translations next
+        if ( node.geosetTranslation != null ) {
+            add( new AnimFlag( node.geosetTranslation ) );
+        }
+        if ( node.geosetScaling != null ) {
+            add( new AnimFlag( node.geosetScaling ) );
+        }
+        if ( node.geosetRotation != null ) {
+            add( new AnimFlag( node.geosetRotation ) );
+        }
+        // ----- End Base NODE to "IDOBJECT" -----
+    }
 
-	public abstract void add(String flag);
+    @Override
+    public Vertex getPivotPoint() {
+        return pivotPoint;
+    }
 
-	public abstract List<String> getFlags();
+    @Override
+    public IdObject getParent() {
+        return parent;
+    }
 
-	@Override
-	public abstract List<AnimFlag> getAnimFlags();
+    @Override
+    public abstract void add( AnimFlag af );
 
-	public abstract void apply(IdObjectVisitor visitor);
+    public abstract void add( String flag );
 
-	@Override
-	public abstract float getRenderVisibility(AnimatedRenderEnvironment animatedRenderEnvironment);
+    public abstract List<String> getFlags();
 
-	@Override
-	public abstract Vertex getRenderTranslation(AnimatedRenderEnvironment animatedRenderEnvironment);
+    @Override
+    public abstract List<AnimFlag> getAnimFlags();
 
-	@Override
-	public abstract QuaternionRotation getRenderRotation(AnimatedRenderEnvironment animatedRenderEnvironment);
+    public abstract void apply( IdObjectVisitor visitor );
 
-	@Override
-	public abstract Vertex getRenderScale(AnimatedRenderEnvironment animatedRenderEnvironment);
+    @Override
+    public abstract float getRenderVisibility( AnimatedRenderEnvironment animatedRenderEnvironment );
 
-	@Override
-	public void remove(final AnimFlag af) {
-		getAnimFlags().remove(af);
-	}
+    @Override
+    public abstract Vertex getRenderTranslation( AnimatedRenderEnvironment animatedRenderEnvironment );
 
-	@Override
-	public List<IdObject> getChildrenNodes() {
-		return childrenNodes;
-	}
+    @Override
+    public abstract QuaternionRotation getRenderRotation( AnimatedRenderEnvironment animatedRenderEnvironment );
 
-	public float[] getBindPose() {
-		return bindPose;
-	}
+    @Override
+    public abstract Vertex getRenderScale( AnimatedRenderEnvironment animatedRenderEnvironment );
 
-	public void setBindPose(final float[] bindPose) {
-		this.bindPose = bindPose;
-	}
+    @Override
+    public void remove( final AnimFlag af ) {
+        getAnimFlags().remove( af );
+    }
 
-	private static final Vector4f translationHeap = new Vector4f();
-	private static final Matrix4f matrixHeap = new Matrix4f();
-	private static final Quaternion rotationHeap = new Quaternion();
-	private static final Quaternion rotationDeltaHeap = new Quaternion();
-	private static final Vector4f axisAngleHeap = new Vector4f();
+    @Override
+    public List<IdObject> getChildrenNodes() {
+        return childrenNodes;
+    }
 
-	private static final Vector3f IDENTITY = new Vector3f(0, 0, 0);
+    public float[] getBindPose() {
+        return bindPose;
+    }
+
+    public void setBindPose( final float[] bindPose ) {
+        this.bindPose = bindPose;
+    }
+
+    private static final Vector4f   translationHeap     = new Vector4f();
+    private static final Matrix4f   matrixHeap          = new Matrix4f();
+    private static final Quaternion rotationHeap        = new Quaternion();
+    private static final Quaternion rotationDeltaHeap   = new Quaternion();
+    private static final Vector4f   axisAngleHeap       = new Vector4f();
+
+    private static final Vector3f   IDENTITY            = new Vector3f( 0, 0, 0 );
 }
