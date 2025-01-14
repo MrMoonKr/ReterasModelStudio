@@ -1190,6 +1190,7 @@ public class MainPanel extends JPanel
 			public void viewFocusChanged( final View arg0, final View arg1 ) {
 			}
 		} );
+        
 		final JPanel jPanel = new JPanel();
 		jPanel.add( new JLabel( "..." ) );
 		viewportControllerWindowView = new View( "Outliner", null, jPanel );// GlobalIcons.geoIcon
@@ -1755,8 +1756,10 @@ public class MainPanel extends JPanel
 				}
 			}
 		} );
+
 		final View view = new View( "Data Browser", imageIcon, mpqBrowser );
 		view.getWindowProperties().setCloseEnabled( true );
+
 		return view;
 	}
 
@@ -1968,29 +1971,29 @@ public class MainPanel extends JPanel
 				StandardObjectData.getStandardUnitMeta(), editorData );
 	}
 
-	/**
-	 * "war3map.w3d" 데이터 및 "war3map.wts" 데이터 로딩 시도.
-	 * "Doodads\\Doodads.slk" 및 "Doodads\\DoodadSkins.txt" 실재 로딩
-	 * @return
-	 */
-	public MutableObjectData getDoodadData() {
-		final War3ObjectDataChangeset editorData = new War3ObjectDataChangeset( 'd' );
-		try {
-			final MpqCodebase mpqCodebase = MpqCodebase.get();
-			if ( mpqCodebase.has( "war3map.w3d" ) ) {
-				editorData.load( new BlizzardDataInputStream( mpqCodebase.getResourceAsStream( "war3map.w3d" ) ),
-						mpqCodebase.has( "war3map.wts" )
-								? new WTSFile( mpqCodebase.getResourceAsStream( "war3map.wts" ) )
-								: null,
-						true );
-			}
-		} 
-		catch ( final IOException e ) {
-			e.printStackTrace();
-		}
-		return new MutableObjectData( WorldEditorDataType.DOODADS, StandardObjectData.getStandardDoodads(),
-				StandardObjectData.getStandardDoodadMeta(), editorData );
-	}
+    /**
+     * "war3map.w3d" 데이터 및 "war3map.wts" 데이터 로딩 시도. 
+     * "Doodads\\Doodads.slk" 및 "Doodads\\DoodadSkins.txt" 실재 로딩
+     * 
+     * @return
+     */
+    public MutableObjectData getDoodadData() {
+        final War3ObjectDataChangeset editorData = new War3ObjectDataChangeset( 'd' );
+        try {
+            final MpqCodebase mpqCodebase = MpqCodebase.get();
+            if ( mpqCodebase.has( "war3map.w3d" ) ) {
+                editorData.load( new BlizzardDataInputStream( mpqCodebase.getResourceAsStream( "war3map.w3d" ) ),
+                        mpqCodebase.has( "war3map.wts" )
+                                ? new WTSFile( mpqCodebase.getResourceAsStream( "war3map.wts" ) )
+                                : null,
+                        true );
+            }
+        } catch ( final IOException e ) {
+            e.printStackTrace();
+        }
+        return new MutableObjectData( WorldEditorDataType.DOODADS, StandardObjectData.getStandardDoodads(),
+                StandardObjectData.getStandardDoodadMeta(), editorData );
+    }
 
 	public UnitEditorSettings getUnitEditorSettings() {
 		return new UnitEditorSettings();

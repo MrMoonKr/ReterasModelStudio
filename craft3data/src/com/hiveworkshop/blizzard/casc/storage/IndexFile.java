@@ -16,6 +16,7 @@ import com.hiveworkshop.blizzard.casc.nio.MalformedCASCStructureException;
  * .idx 파일 랩퍼 클래스.
  */
 public class IndexFile {
+    
     /**
      * Alignment of the index entry block in bytes.
      */

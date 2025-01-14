@@ -454,7 +454,8 @@ public class DataTable implements ObjectData {
                     // }
                     // }
                 }
-            } else if ( input.contains( "=" ) ) {
+            } 
+            else if ( input.contains( "=" ) ) {
                 final int eIndex = input.indexOf( "=" );
                 final String fieldValue = input.substring( eIndex + 1 );
                 // if (fieldValue.length() > 1 && fieldValue.startsWith("\"") &&

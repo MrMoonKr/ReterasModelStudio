@@ -40,7 +40,8 @@ public class StandardObjectData {
         final DataTable unitWeapons = new DataTable();
         final DataTable skin = new DataTable();
 
-        try {
+        try 
+        {
             profile.readTXT( source.getResourceAsStream( "Units\\CampaignUnitFunc.txt" ), true );
             profile.readTXT( source.getResourceAsStream( "Units\\CampaignUnitStrings.txt" ), true );
             profile.readTXT( source.getResourceAsStream( "Units\\HumanUnitFunc.txt" ), true );
@@ -67,7 +68,8 @@ public class StandardObjectData {
             if ( unitSkin != null ) {
                 skin.readTXT( unitSkin, true );
             }
-        } catch ( final IOException e ) {
+        } 
+        catch ( final IOException e ) {
             ExceptionPopup.display( e );
         }
 
@@ -138,22 +140,22 @@ public class StandardObjectData {
      * @return
      */
     public static WarcraftData getStandardDoodads() {
+
         final Codebase source = MpqCodebase.get();
-
         final DataTable destructableData = new DataTable();
-
-        try {
+        try 
+        {
             destructableData.readSLK( source.getResourceAsStream( "Doodads\\Doodads.slk" ) );
             final InputStream unitSkin = source.getResourceAsStream( "Doodads\\DoodadSkins.txt" );
             if ( unitSkin != null ) {
                 destructableData.readTXT( unitSkin, true );
             }
-        } catch ( final IOException e ) {
+        } 
+        catch ( final IOException e ) {
             ExceptionPopup.display( e );
         }
 
         final WarcraftData units = new WarcraftData();
-
         units.add( destructableData, "DoodadData", true );
 
         return units;
@@ -376,9 +378,19 @@ public class StandardObjectData {
     }
 
     public static class WarcraftData implements ObjectData {
-        List<DataTable> tables = new ArrayList<>();
-        Map<StringKey, DataTable> tableMap = new HashMap<>();
-        Map<StringKey, WarcraftObject> units = new HashMap<>();
+
+        /**
+         * 테이블 캐싱
+         */
+        private List<DataTable> tables                  = new ArrayList<>();
+        /**
+         * 테이블 이름을 키로 사용하여 테이블을 찾을 수 있도록 함
+         */
+        private Map<StringKey, DataTable> tableMap      = new HashMap<>();
+        /**
+         * 유닛 아이디를 키로 사용하여 유닛을 찾을 수 있도록 함
+         */
+        private Map<StringKey, WarcraftObject> units    = new HashMap<>();
 
         public void add( final DataTable data, final String name, final boolean canMake ) {
             tableMap.put( new StringKey( name ), data );

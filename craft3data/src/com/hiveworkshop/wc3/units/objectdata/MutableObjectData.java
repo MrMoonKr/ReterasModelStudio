@@ -18,6 +18,7 @@ import com.hiveworkshop.wc3.units.ObjectData;
 import com.hiveworkshop.wc3.user.SaveProfile;
 
 public final class MutableObjectData {
+    
 	private static final War3ID ROC_SUPPORT_URAC = War3ID.fromString("urac");
 	private static final War3ID ROC_SUPPORT_UCAM = War3ID.fromString("ucam");
 	private static final War3ID ROC_SUPPORT_USPE = War3ID.fromString("uspe");

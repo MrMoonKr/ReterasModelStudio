@@ -22,10 +22,12 @@ import com.hiveworkshop.blizzard.casc.Key;
 import com.hiveworkshop.blizzard.casc.nio.MalformedCASCStructureException;
 
 /**
+ * 로컬 CASC 아카이브 데이터 저장소. 
  * Main data storage of a CASC archive. It consists of index files which point
  * to storage containers in data files.
  */
 public class Storage implements AutoCloseable {
+    
     /**
      * The name of the data folder containing the configuration files.
      */
@@ -139,15 +141,16 @@ public class Storage implements AutoCloseable {
         }
 
         class IndexFileNameMeta {
-            private Path filePath;
-            private int index;
-            private long version;
+            private Path    filePath;
+            private int     index;
+            private long    version;
         }
 
         final HashMap<Integer, ArrayList<IndexFileNameMeta>> metaMap = 
                 new HashMap<Integer, ArrayList<IndexFileNameMeta>>( INDEX_COUNT );
 
         for ( final Path indexFile : indexFiles ) {
+
             final String fileName = indexFile.getFileName().toString();
 
             final IndexFileNameMeta fileMeta = new IndexFileNameMeta();
@@ -179,8 +182,8 @@ public class Storage implements AutoCloseable {
             Collections.sort( bucketList, bucketOrder );
 
             final IndexFileNameMeta fileMeta = bucketList.get( 0 );
-            idxVersions[index] = fileMeta.version;
-            indicies[index] = new IndexFile( loadFileFully( fileMeta.filePath ) );
+            idxVersions[index]  = fileMeta.version;
+            indicies[index]     = new IndexFile( loadFileFully( fileMeta.filePath ) );
         }
 
         // resolve index key length being used

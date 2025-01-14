@@ -47,26 +47,28 @@ import com.hiveworkshop.wc3.user.SaveProfile;
 import com.hiveworkshop.wc3.util.Callback;
 
 public final class MPQBrowser extends JPanel {
-	private final class MouseAdapterExtension extends MouseAdapter {
-		private final JPopupMenu contextMenu;
-		private TreePath clickedPath;
+    
+    private final class MouseAdapterExtension extends MouseAdapter {
 
-		private MouseAdapterExtension(final JPopupMenu contextMenu) {
-			this.contextMenu = contextMenu;
-		}
+        private final JPopupMenu contextMenu;
+        private TreePath clickedPath;
 
-		@Override
-		public void mouseClicked(final MouseEvent e) {
-			clickedPath = tree.getPathForLocation(e.getX(), e.getY());
-			if (SwingUtilities.isRightMouseButton(e)) {
-				contextMenu.show(tree, e.getX(), e.getY());
-			}
-		}
+        private MouseAdapterExtension( final JPopupMenu contextMenu ) {
+            this.contextMenu = contextMenu;
+        }
 
-		public TreePath getClickedPath() {
-			return clickedPath;
-		}
-	}
+        @Override
+        public void mouseClicked( final MouseEvent e ) {
+            clickedPath = tree.getPathForLocation( e.getX(), e.getY() );
+            if ( SwingUtilities.isRightMouseButton( e ) ) {
+                contextMenu.show( tree, e.getX(), e.getY() );
+            }
+        }
+
+        public TreePath getClickedPath() {
+            return clickedPath;
+        }
+    }
 
 	private final JTree tree;
 	private final JFileChooser exportFileChooser;
@@ -194,6 +196,7 @@ public final class MPQBrowser extends JPanel {
 		// 컨텍스트 메뉴 ( context menu )
 
 		final JPopupMenu contextMenu = new JPopupMenu();
+
 		final JMenuItem openItem = new JMenuItem("Open");
 		openItem.addActionListener(new ActionListener() {
 			@Override
@@ -202,6 +205,7 @@ public final class MPQBrowser extends JPanel {
 						.run(((MPQTreeNode) mouseAdapterExtension.getClickedPath().getLastPathComponent()).getPath());
 			}
 		});
+
 		final JMenuItem extractItem = new JMenuItem("Export");
 		extractItem.addActionListener(new ActionListener() {
 			@Override
@@ -238,6 +242,7 @@ public final class MPQBrowser extends JPanel {
 				}
 			}
 		});
+
 		final JMenuItem copyPathToClipboardItem = new JMenuItem("Copy Path to Clipboard");
 		copyPathToClipboardItem.addActionListener(new ActionListener() {
 			@Override
@@ -249,10 +254,12 @@ public final class MPQBrowser extends JPanel {
 				clipboard.setContents(selection, selection);
 			}
 		});
+
 		contextMenu.add(openItem);
 		contextMenu.add(extractItem);
 		contextMenu.addSeparator();
 		contextMenu.add(copyPathToClipboardItem);
+
 		final JMenuItem useAsTextureItem = new JMenuItem("Use as Texture");
 		useAsTextureItem.addActionListener(new ActionListener() {
 			@Override
@@ -261,6 +268,7 @@ public final class MPQBrowser extends JPanel {
 						.run(((MPQTreeNode) mouseAdapterExtension.getClickedPath().getLastPathComponent()).getPath());
 			}
 		});
+
 		contextMenu.add(useAsTextureItem);
 		contextMenu.addSeparator();
 
@@ -271,6 +279,7 @@ public final class MPQBrowser extends JPanel {
 				exportRoot();
 			}
 		});
+
 		contextMenu.add(exportRoot);
 
 		mouseAdapterExtension = new MouseAdapterExtension(contextMenu);
