@@ -19,7 +19,9 @@ import com.hiveworkshop.wc3.mpq.MpqCodebase;
  * GameObject의 메타 데이터. slk, txt 파일을 읽어들여서 생성한다. 
  */
 public class DataTable implements ObjectData {
+
     private static final boolean DEBUG = false;
+    
     static DataTable theTable;
     static DataTable spawnTable;
     static DataTable splatTable;

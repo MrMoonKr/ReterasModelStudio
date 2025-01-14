@@ -72,7 +72,7 @@ public class UnitEditorPanel extends JSplitPane implements TreeSelectionListener
 	UnitEditorTree tree;
 	TopLevelCategoryFolder root;
 
-	JTable table;
+	private JTable table;
 	private final EditorFieldBuilder editorFieldBuilder;
 	private boolean holdingShift = false;
 	private ObjectDataTableModel dataModel;
