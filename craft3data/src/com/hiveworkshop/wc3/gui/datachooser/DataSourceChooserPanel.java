@@ -58,7 +58,7 @@ import com.hiveworkshop.blizzard.casc.io.WarcraftIIICASC.FileSystem;
 import com.hiveworkshop.nio.ByteBufferInputStream;
 import com.hiveworkshop.wc3.gui.ExceptionPopup;
 import com.hiveworkshop.wc3.gui.datachooser.CascDataSource.Product;
-import com.hiveworkshop.wc3.gui.icons.RMSIcons;
+//import com.hiveworkshop.wc3.gui.icons.RMSIcons;
 import com.hiveworkshop.wc3.user.WindowsRegistry;
 import com.jtattoo.plaf.acryl.AcrylLookAndFeel;
 import com.jtattoo.plaf.aluminium.AluminiumLookAndFeel;
@@ -158,6 +158,7 @@ public class DataSourceChooserPanel extends JPanel {
             }
         } );
         addDefaultCascPrefixes.setEnabled( false );
+        
         final JButton addSpecificCascPrefix = new JButton( "Add Specific CASC Mod" );
         addSpecificCascPrefix.setEnabled( false );
         addSpecificCascPrefix.addActionListener( new ActionListener() {

@@ -32,6 +32,7 @@ import com.hiveworkshop.wc3.mdl.v2.ModelView;
  * @param forced
  */
 public final class RenderModel {
+    
 	private static final Quaternion HALF_PI_X = new Quaternion();
 	private static final Quaternion HALF_PI_Y = new Quaternion();
 	{

@@ -9,6 +9,7 @@ import com.hiveworkshop.wc3.mdl.v2.visitor.GeosetVisitor;
 import com.hiveworkshop.wc3.mdl.v2.visitor.MeshVisitor;
 
 public final class RenderByViewMeshRenderer implements MeshVisitor {
+    
 	private MeshVisitor fullModelRenderer;
 	private final ModelView modelView;
 
