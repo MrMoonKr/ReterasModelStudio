@@ -31,196 +31,143 @@ import net.infonode.docking.View;
  * @version (a version number or a date)
  */
 public class PerspDisplayPanel extends JPanel {
-	private final ModelView dispMDL;
-	private PerspectiveViewport vp;
-	private JPanel vpp;
-	private String title;
-	private final ProgramPreferences programPreferences;
-	private final View view;
-	private final RenderModel editorRenderModel;
+    
+    private final ModelView dispMDL;
+    private PerspectiveViewport vp;
+    private JPanel vpp;
+    private String title;
+    private final ProgramPreferences programPreferences;
+    private final View view;
+    private final RenderModel editorRenderModel;
 
-	// private JCheckBox wireframe;
-	public PerspDisplayPanel(final String title, final ModelView dispMDL, final ProgramPreferences programPreferences,
-			final RenderModel editorRenderModel) {
-		super();
-		this.programPreferences = programPreferences;
-		this.editorRenderModel = editorRenderModel;
-		// BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(title),BorderFactory.createBevelBorder(1)),BorderFactory.createEmptyBorder(1,1,1,1)
-		// ));
-		setOpaque(true);
+    // private JCheckBox wireframe;
+    public PerspDisplayPanel( final String title, final ModelView dispMDL, final ProgramPreferences programPreferences,
+            final RenderModel editorRenderModel ) 
+    {
+        super();
 
-		// wireframe = new JCheckBox("Wireframe");
-		// add(wireframe);
-		setViewport(dispMDL);
-		getViewport().setMinimumSize(new Dimension(200, 200));
-		this.title = title;
-		this.dispMDL = dispMDL;
+        this.programPreferences = programPreferences;
+        this.editorRenderModel = editorRenderModel;
+        // BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(title),BorderFactory.createBevelBorder(1)),BorderFactory.createEmptyBorder(1,1,1,1)
+        // ));
+        setOpaque( true );
 
+        // wireframe = new JCheckBox("Wireframe");
+        // add(wireframe);
+        setViewport( dispMDL );
+        getViewport().setMinimumSize( new Dimension( 200, 200 ) );
 
-		final GroupLayout layout = new GroupLayout(this);
-		layout.setHorizontalGroup(layout.createSequentialGroup().addComponent(vp));
-		// .addComponent(wireframe));
-		// .addComponent(vp)
-		// .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-		// .addComponent(plusZoom)
-		// .addComponent(minusZoom)
-		// .addGroup(layout.createSequentialGroup()
-		// .addComponent(left)
-		// .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-		// .addComponent(up)
-		// .addComponent(down))
-		// .addComponent(right)))
-		// );
-		layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(vp));
-		// .addComponent(wireframe));
-		// .addComponent(vp)
-		// .addGroup(layout.createSequentialGroup()
-		// .addComponent(plusZoom)
-		// .addGap(16)
-		// .addComponent(minusZoom)
-		// .addGap(16)
-		// .addComponent(up)
-		// .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-		// .addComponent(left)
-		// .addComponent(right))
-		// .addComponent(down)
-		// ));
-		//
-		setLayout(new BorderLayout());
-		add(vp);
-//		add(Box.createHorizontalStrut(200));
-//		add(Box.createVerticalStrut(200));
-		// setLayout( new BoxLayout(this,BoxLayout.LINE_AXIS));
-		// setLayout(new GridLayout(1,1));
-		this.view = new View(title, null, this);
-	}
+        this.title = title;
+        this.dispMDL = dispMDL;
 
-	public void setViewportBackground(final Color background) {
-		vp.setViewportBackground(background);
-	}
+        final GroupLayout layout = new GroupLayout( this );
+        layout.setHorizontalGroup( layout.createSequentialGroup().addComponent( vp ) );
+        layout.setVerticalGroup( layout.createParallelGroup( GroupLayout.Alignment.CENTER ).addComponent( vp ) );
 
-	public Color getViewportBackground() {
-		return vp.getBackground();
-	}
+        setLayout( new BorderLayout() );
+        add( vp );
 
-	public View getView() {
-		return view;
-	}
+        this.view = new View( title, null, this );
+    }
 
-	public void addGeosets(final List<Geoset> list) {
-		vp.addGeosets(list);
-	}
+    public void setViewportBackground( final Color background ) {
+        vp.setViewportBackground( background );
+    }
 
-	public void reloadTextures() {
-		vp.reloadTextures();
-	}
+    public Color getViewportBackground() {
+        return vp.getBackground();
+    }
 
-	public void reloadAllTextures() {
-		vp.reloadAllTextures();
-	}
+    public View getView() {
+        return view;
+    }
 
-	public void setViewport(final ModelView dispModel) {
-		setViewport(dispModel, 200);
-	}
+    public void addGeosets( final List<Geoset> list ) {
+        vp.addGeosets( list );
+    }
 
-	public void setViewport(final ModelView dispModel, final int viewerSize) {
-		try {
-			if (vp != null) {
-				vp.destroy();
-			}
-			removeAll();
-			vp = new PerspectiveViewport(dispModel, programPreferences, editorRenderModel);
-			vp.setIgnoreRepaint(false);
-			vp.setMinimumSize(new Dimension(viewerSize, viewerSize));
-			final GroupLayout layout = new GroupLayout(this);
-			layout.setHorizontalGroup(layout.createSequentialGroup().addComponent(vp));
-			// .addComponent(wireframe));
-			// .addComponent(vp)
-			// .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-			// .addComponent(plusZoom)
-			// .addComponent(minusZoom)
-			// .addGroup(layout.createSequentialGroup()
-			// .addComponent(left)
-			// .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-			// .addComponent(up)
-			// .addComponent(down))
-			// .addComponent(right)))
-			// );
-			layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(vp));
-			// .addComponent(wireframe));
-			// .addComponent(vp)
-			// .addGroup(layout.createSequentialGroup()
-			// .addComponent(plusZoom)
-			// .addGap(16)
-			// .addComponent(minusZoom)
-			// .addGap(16)
-			// .addComponent(up)
-			// .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-			// .addComponent(left)
-			// .addComponent(right))
-			// .addComponent(down)
-			// ));
-			//
-			setLayout(new BorderLayout());
-			// vp.setWireframeHandler(wireframe);
-			// vpp = new JPanel();
-			// vpp.add(Box.createHorizontalStrut(200));
-			// vpp.add(Box.createVerticalStrut(200));
-			// vpp.setLayout( new BoxLayout(this,BoxLayout.LINE_AXIS));
-			// vpp.add(vp);
-			// vp.initGL();
-		} catch (final LWJGLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		add(vp, BorderLayout.CENTER);
-	}
+    public void reloadTextures() {
+        vp.reloadTextures();
+    }
 
-	public void setTitle(final String what) {
-		title = what;
-		setBorder(BorderFactory.createTitledBorder(title));
-	}
+    public void reloadAllTextures() {
+        vp.reloadAllTextures();
+    }
 
-	public PerspectiveViewport getViewport() {
-		return vp;
-	}
+    public void setViewport( final ModelView dispModel ) {
+        setViewport( dispModel, 200 );
+    }
 
-	@Override
-	public void paintComponent(final Graphics g) {
-		super.paintComponent(g);
-		vp.paint(vp.getGraphics());
-		// g.drawString(title,3,3);
-		// vp.repaint();
-	}
+    public void setViewport( final ModelView dispModel, final int viewerSize ) {
+        try {
+            if ( vp != null ) {
+                vp.destroy();
+            }
+            removeAll();
 
-	// public void addGeoset(Geoset g)
-	// {
-	// m_geosets.add(g);
-	// }
-	// public void setGeosetVisible(int index, boolean flag)
-	// {
-	// Geoset geo = (Geoset)m_geosets.get(index);
-	// geo.setVisible(flag);
-	// }
-	// public void setGeosetHighlight(int index, boolean flag)
-	// {
-	// Geoset geo = (Geoset)m_geosets.get(index);
-	// geo.setHighlight(flag);
-	// }
-	// public void clearGeosets()
-	// {
-	// m_geosets.clear();
-	// }
-	// public int getGeosetsSize()
-	// {
-	// return m_geosets.size();
-	// }
+            vp = new PerspectiveViewport( dispModel, programPreferences, editorRenderModel );
+            vp.setIgnoreRepaint( false );
+            vp.setMinimumSize( new Dimension( viewerSize, viewerSize ) );
 
-	public ImageIcon getImageIcon() {
-		return new ImageIcon(vp.getBufferedImage());
-	}
+            final GroupLayout layout = new GroupLayout( this );
+            layout.setHorizontalGroup( layout.createSequentialGroup().addComponent( vp ) );
+            layout.setVerticalGroup( layout.createParallelGroup( GroupLayout.Alignment.CENTER ).addComponent( vp ) );
 
-	public BufferedImage getBufferedImage() {
-		return vp.getBufferedImage();
-	}
+            setLayout( new BorderLayout() );
+
+        } 
+        catch ( final LWJGLException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        add( vp, BorderLayout.CENTER );
+    }
+
+    public void setTitle( final String what ) {
+        title = what;
+        setBorder( BorderFactory.createTitledBorder( title ) );
+    }
+
+    public PerspectiveViewport getViewport() {
+        return vp;
+    }
+
+    @Override
+    public void paintComponent( final Graphics g ) {
+        super.paintComponent( g );
+
+        vp.paint( vp.getGraphics() );
+    }
+
+    // public void addGeoset(Geoset g)
+    // {
+    // m_geosets.add(g);
+    // }
+    // public void setGeosetVisible(int index, boolean flag)
+    // {
+    // Geoset geo = (Geoset)m_geosets.get(index);
+    // geo.setVisible(flag);
+    // }
+    // public void setGeosetHighlight(int index, boolean flag)
+    // {
+    // Geoset geo = (Geoset)m_geosets.get(index);
+    // geo.setHighlight(flag);
+    // }
+    // public void clearGeosets()
+    // {
+    // m_geosets.clear();
+    // }
+    // public int getGeosetsSize()
+    // {
+    // return m_geosets.size();
+    // }
+
+    public ImageIcon getImageIcon() {
+        return new ImageIcon( vp.getBufferedImage() );
+    }
+
+    public BufferedImage getBufferedImage() {
+        return vp.getBufferedImage();
+    }
 }

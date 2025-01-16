@@ -892,6 +892,7 @@ public class PerspectiveViewport extends BetterAWTGLCanvas
                 return;
             }
         }
+
         for ( int i = 0; i < geo.getMaterial().getLayers().size(); i++ ) {
             final Layer layer = geo.getMaterial().getLayers().get( i );
             final boolean isHD = layer.getLayerShader() == LayerShader.HD;
@@ -913,12 +914,14 @@ public class PerspectiveViewport extends BetterAWTGLCanvas
                                 if ( first ) {
                                     first = false;
                                     bindLayer( layer, shaderTexture, textureMap.get( shaderTexture ) );
-                                } else {
+                                } 
+                                else {
                                     bindTexture( shaderTexture, textureMap.get( shaderTexture ) );
                                 }
                             }
                         }
-                    } else {
+                    } 
+                    else {
                         final Bitmap tex = layer.getRenderTexture( timeEnvironment, modelView.getModel(),
                                 ShaderTextureTypeHD.Diffuse );
                         final GlTextureRef texture = textureMap.get( tex );
@@ -938,10 +941,12 @@ public class PerspectiveViewport extends BetterAWTGLCanvas
                         } else {
                             NGGLDP.pipeline.glColor4f( 1f, 1f, 1f, geosetAnimVisibility * layerVisibility );
                         }
-                    } else {
+                    } 
+                    else {
                         NGGLDP.pipeline.glColor4f( 1f, 1f, 1f, geosetAnimVisibility * layerVisibility );
                     }
-                } else {
+                } 
+                else {
                     NGGLDP.pipeline.glColor4f( 1f, 1f, 1f, 1f );
                 }
                 if ( isHD ) {
@@ -949,7 +954,8 @@ public class PerspectiveViewport extends BetterAWTGLCanvas
                     if ( fresnelColor != null ) {
                         NGGLDP.pipeline.glFresnelColor3f( ( float )fresnelColor.z, ( float )fresnelColor.y,
                                 ( float )fresnelColor.x );
-                    } else {
+                    } 
+                    else {
                         NGGLDP.pipeline.glFresnelColor3f( 1f, 1f, 1f );
                     }
                     NGGLDP.pipeline.glFresnelTeamColor1f( layer.getRenderFresnelTeamColor( timeEnvironment ) );
@@ -1039,7 +1045,8 @@ public class PerspectiveViewport extends BetterAWTGLCanvas
 
                             if ( normalSumHeap3.length() > 0 ) {
                                 normalSumHeap3.normalise();
-                            } else {
+                            } 
+                            else {
                                 normalSumHeap3.set( 0, 0, 1 );
                             }
                             NGGLDP.pipeline.glNormal3f( normalSumHeap3.x, normalSumHeap3.y, normalSumHeap3.z );
@@ -1060,10 +1067,7 @@ public class PerspectiveViewport extends BetterAWTGLCanvas
                         NGGLDP.pipeline.glVertex3f( vertexSumHeap.x, vertexSumHeap.y, vertexSumHeap.z );
                     }
                 }
-                // if( texture != null )
-                // {
-                // texture.release();
-                // }
+
                 NGGLDP.pipeline.glEnd();
             }
         }

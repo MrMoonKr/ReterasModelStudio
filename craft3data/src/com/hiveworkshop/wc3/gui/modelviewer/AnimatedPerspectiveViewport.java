@@ -103,8 +103,7 @@ import com.hiveworkshop.wc3.util.MathUtils;
 import com.hiveworkshop.wc3.util.ModelUtils;
 
 public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas 
-        implements MouseListener, ActionListener, MouseWheelListener, 
-                AnimatedRenderEnvironment, RenderResourceAllocator 
+        implements MouseListener, ActionListener, MouseWheelListener, AnimatedRenderEnvironment, RenderResourceAllocator 
 {
     public static final float NORMAL_RENDER_LENGTH = 0.025f;
     public static final boolean LOG_EXCEPTIONS = true;
@@ -142,8 +141,7 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
     private final PortraitCameraManager cameraManager;
 
     public AnimatedPerspectiveViewport( final ModelView modelView, 
-            final ProgramPreferences programPreferences,
-            final boolean loadDefaultCamera ) throws LWJGLException 
+            final ProgramPreferences programPreferences, final boolean loadDefaultCamera ) throws LWJGLException 
     {
         super();
 
@@ -190,8 +188,8 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
 
         loadBackgroundColors();
 
+        // repaint() 호출 타이머 -> paintGL() 호출
         paintTimer = new Timer( 16, new ActionListener() {
-
             @Override
             public void actionPerformed( final ActionEvent e ) {
                 repaint();
@@ -485,14 +483,6 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
         }
     }
 
-    // public byte getPortFirstXYZ()
-    // {
-    // return m_d1;
-    // }
-    // public byte getPortSecondXYZ()
-    // {
-    // return m_d2;
-    // }
     public BufferedImage getBufferedImage() {
         try {
             final int imageWidth = ( int )( getWidth() * xRatio );
@@ -544,11 +534,11 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
     }
 
     private final Vector4f vertexHeap = new Vector4f();
-    private final Vector4f appliedVertexHeap = new Vector4f();
+    //private final Vector4f appliedVertexHeap = new Vector4f();
     private final Vector4f vertexSumHeap = new Vector4f();
     private final Vector4f normalHeap = new Vector4f();
     private final Vector3f normalHeap3 = new Vector3f();
-    private final Vector4f appliedNormalHeap = new Vector4f();
+    //private final Vector4f appliedNormalHeap = new Vector4f();
     private final Vector4f normalSumHeap = new Vector4f();
     private final Vector3f normalSumHeap3 = new Vector3f();
     private final Matrix4f skinBonesMatrixSumHeap = new Matrix4f();
@@ -556,7 +546,7 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
     private final Vector3f screenDimension = new Vector3f();
     private final Matrix3f screenDimensionMat3Heap = new Matrix3f();
     private final Quaternion quatHeap = new Quaternion();
-    private final Vector3f vertexHeap3 = new Vector3f();
+    //private final Vector3f vertexHeap3 = new Vector3f();
     private final Vector3f uvTranslationHeap3 = new Vector3f();
     private final Vector3f uvScaleHeap3 = new Vector3f();
     private final Vector2f uvHeap2A = new Vector2f();
@@ -574,9 +564,12 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
     }
 
     public void paintGL( final boolean autoRepainting ) {
+
         viewerCamera.update();
         cameraManager.updateCamera();
+
         NGGLDP.setPipeline( pipeline );
+
         setSize( getParent().getSize() );
         if ( ( System.currentTimeMillis() - lastExceptionTimeMillis ) < 5000 ) {
             System.err.println( "AnimatedPerspectiveViewport omitting frames due to avoid Exception log spam" );
@@ -590,7 +583,8 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
             pipeline = null;
             try {
                 initGL();// Re-overwrite textures
-            } catch ( final Exception e ) {
+            } 
+            catch ( final Exception e ) {
                 e.printStackTrace();
                 ExceptionPopup.display( "Error loading textures:", e );
             }
@@ -598,7 +592,8 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
             wantReload = false;
             try {
                 forceReloadTextures();
-            } catch ( final Exception e ) {
+            } 
+            catch ( final Exception e ) {
                 e.printStackTrace();
                 ExceptionPopup.display( "Error loading new texture:", e );
             }
@@ -606,6 +601,7 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
             forceReloadTextures();
             texLoaded = true;
         }
+
         try {
             final int formatVersion = modelView.getModel().getFormatVersion();
             if ( live ) {
@@ -616,7 +612,8 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
                             animationTime = ( int )( ( animationTime
                                     + ( long )( ( currentTimeMillis - lastUpdateMillis ) * animSpeed ) )
                                     % animation.length() );
-                        } else {
+                        } 
+                        else {
                             animationTime = Math.min( animation.length(), ( int )( animationTime
                                     + ( ( currentTimeMillis - lastUpdateMillis ) * animSpeed ) ) );
                         }
@@ -626,62 +623,60 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
                 }
             }
 
+            // 렌더 모드 : GL_FILL or GL_LINE
             if ( ( programPreferences != null ) && ( programPreferences.viewMode() == 0 ) ) {
                 NGGLDP.pipeline.glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-            } else if ( ( programPreferences == null ) || ( programPreferences.viewMode() == 1 ) ) {
+            } 
+            else if ( ( programPreferences == null ) || ( programPreferences.viewMode() == 1 ) ) {
                 NGGLDP.pipeline.glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
             }
+
             NGGLDP.pipeline.glViewport( 0, 0, ( int )( getWidth() * xRatio ), ( int )( getHeight() * yRatio ) );
             viewerCamera.viewport( 0, 0, getWidth() * xRatio, getHeight() * yRatio );
-            GL11.glEnable( GL_DEPTH_TEST );
 
+            GL11.glEnable( GL_DEPTH_TEST );
             GL11.glDepthFunc( GL11.GL_LEQUAL );
             GL11.glDepthMask( true );
+
             NGGLDP.pipeline.glEnableIfNeeded( GL_COLOR_MATERIAL );
             NGGLDP.pipeline.glEnableIfNeeded( GL_LIGHTING );
             NGGLDP.pipeline.glEnableIfNeeded( GL_LIGHT0 );
             NGGLDP.pipeline.glEnableIfNeeded( GL_LIGHT1 );
             NGGLDP.pipeline.glEnableIfNeeded( GL_NORMALIZE );
             GL11.glTexEnvi( GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE );
-            // System.out.println("max:
-            // "+GL11.glGetInteger(GL11.GL_MAX_TEXTURE_SIZE));
+            // System.out.println("max textures : " + GL11.glGetInteger(GL11.GL_MAX_TEXTURE_SIZE));
             if ( renderTextures() ) {
                 NGGLDP.pipeline.glEnableIfNeeded( GL11.GL_TEXTURE_2D );
             }
+            
             GL11.glClearColor( backgroundRed, backgroundGreen, backgroundBlue, autoRepainting ? 1.0f : 0.0f );
-            // glClearColor(0f, 0f, 0f, 1.0f);
+
             NGGLDP.pipeline.glMatrixMode( GL_PROJECTION );
             NGGLDP.pipeline.glLoadIdentity();
-            // NGGLDP.pipeline.gluPerspective(45f, (float) getWidth() / (float) getHeight(),
-            // 20.0f, 60000.0f);
-            // GLU.gluOrtho2D(45f, (float)current_width/(float)current_height,
-            // 1.0f, 600.0f);
-            // glRotatef(angle, 0, 0, 0);
-            // glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
-            // gluOrtho2D(0.0f, (float) getWidth(), 0.0f, (float) getHeight());
-            // GLU.
+
             GL11.glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
             NGGLDP.pipeline.glMatrixMode( GL_MODELVIEW );
             NGGLDP.pipeline.glLoadIdentity();
-            // GL11.glShadeModel(GL11.GL_SMOOTH);
 
             NGGLDP.pipeline.glCamera( viewerCamera, cameraManager.modelCamera != null );
 
+            // 주변 조명
             final FloatBuffer ambientColor = BufferUtils.createFloatBuffer( 4 );
             ambientColor.put( 0.6f ).put( 0.6f ).put( 0.6f ).put( 1f ).flip();
-            // float [] ambientColor = {0.2f, 0.2f, 0.2f, 1f};
-            // FloatBuffer buffer =
-            // ByteBuffer.allocateDirect(ambientColor.length*8).asFloatBuffer();
-            // buffer.put(ambientColor).flip();
+
             NGGLDP.pipeline.glLightModel( GL_LIGHT_MODEL_AMBIENT, ambientColor );
 
+            // 메인 조명
             final FloatBuffer lightColor0 = BufferUtils.createFloatBuffer( 4 );
             lightColor0.put( 0.8f ).put( 0.8f ).put( 0.8f ).put( 1f ).flip();
             final FloatBuffer lightPos0 = BufferUtils.createFloatBuffer( 4 );
             lightPos0.put( 40.0f ).put( 100.0f ).put( 80.0f ).put( 1f ).flip();
+
             NGGLDP.pipeline.glLight( GL_LIGHT0, GL_DIFFUSE, lightColor0 );
             NGGLDP.pipeline.glLight( GL_LIGHT0, GL_POSITION, lightPos0 );
 
+            // 배경 조명
             final FloatBuffer lightColor1 = BufferUtils.createFloatBuffer( 4 );
             lightColor1.put( 0.2f ).put( 0.2f ).put( 0.2f ).put( 1f ).flip();
             final FloatBuffer lightPos1 = BufferUtils.createFloatBuffer( 4 );
@@ -690,11 +685,10 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
             NGGLDP.pipeline.glLight( GL_LIGHT1, GL_DIFFUSE, lightColor1 );
             NGGLDP.pipeline.glLight( GL_LIGHT1, GL_POSITION, lightPos1 );
 
-            // glColor3f(1f,1f,0f);
-            // glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ) ;
-            // glEnable(GL_COLOR_MATERIAL);
+            // 메시 렌더링
             final ArrayList<Geoset> geosets = modelView.getModel().getGeosets();
             render( geosets, formatVersion );
+
             GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
             GL11.glTexEnvi( GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND );
             NGGLDP.pipeline.glDisableIfNeeded( GL11.GL_TEXTURE_2D );
@@ -706,7 +700,7 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
                 NGGLDP.pipeline.glBegin( GL11.GL_LINES );
                 NGGLDP.pipeline.glColor3f( 1f, 1f, 3f );
                 // if( wireframe.isSelected() )
-                for ( final Geoset geo : modelView.getModel().getGeosets() ) {// .getMDL().getGeosets()
+                for ( final Geoset geo : modelView.getModel().getGeosets() ) {
                     if ( ModelUtils.isLevelOfDetailSupported( formatVersion ) && ( geo.getLevelOfDetailName() != null )
                             && ( geo.getLevelOfDetailName().length() > 0 ) ) {
                         if ( geo.getLevelOfDetail() != levelOfDetail ) {
@@ -751,7 +745,8 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
                             }
                             if ( !processedBones ) {
                                 skinBonesMatrixSumHeap.setIdentity();
-                            } else if ( sumWeight > 0 ) {
+                            } 
+                            else if ( sumWeight > 0 ) {
                                 skinBonesMatrixSumHeap.m00 /= sumWeight;
                                 skinBonesMatrixSumHeap.m01 /= sumWeight;
                                 skinBonesMatrixSumHeap.m02 /= sumWeight;
@@ -805,8 +800,10 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
                         }
                     }
                 }
+
                 NGGLDP.pipeline.glEnd();
             }
+
             if ( renderTextures() ) {
                 GL11.glTexEnvi( GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE );
                 NGGLDP.pipeline.glEnableIfNeeded( GL11.GL_TEXTURE_2D );
@@ -823,10 +820,6 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
                 emitter.render( renderModel, renderModel.getParticleShader() );
             }
 
-            // System.out.println("max:
-            // "+GL11.glGetInteger(GL11.GL_MAX_TEXTURE_SIZE));
-
-            // glPopMatrix();
             if ( autoRepainting ) {
                 swapBuffers();
                 final boolean showing = isShowing();
@@ -837,7 +830,8 @@ public class AnimatedPerspectiveViewport extends BetterAWTGLCanvas
                     paintTimer.stop();
                 }
             }
-        } catch ( final Throwable e ) {
+        } 
+        catch ( final Throwable e ) {
             e.printStackTrace();
             lastExceptionTimeMillis = System.currentTimeMillis();
             if ( ( lastThrownErrorClass == null ) || ( lastThrownErrorClass != e.getClass() ) ) {

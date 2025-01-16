@@ -29,9 +29,8 @@ public class AnimationViewer extends JPanel {
     private final boolean allowUnanimated;
 
     public AnimationViewer( final ModelView mdlDisp, 
-            final ProgramPreferences programPreferences,
-            final boolean allowUnanimated ) {
-
+            final ProgramPreferences programPreferences, final boolean allowUnanimated ) 
+    {
         this.mdlDisp = mdlDisp;
         this.allowUnanimated = allowUnanimated;
 
@@ -60,7 +59,8 @@ public class AnimationViewer extends JPanel {
         animationBox.setRenderer( new BasicComboBoxRenderer() {
             @Override
             public Component getListCellRendererComponent( final JList<?> list, final Object value, final int index,
-                    final boolean isSelected, final boolean cellHasFocus ) {
+                    final boolean isSelected, final boolean cellHasFocus ) 
+            {
                 return super.getListCellRendererComponent( list, value == null ? "(Unanimated)" : value, index,
                         isSelected, cellHasFocus );
             }
@@ -97,9 +97,12 @@ public class AnimationViewer extends JPanel {
     }
 
     public void reload() {
+        
         final Animation selectedItem = ( Animation )animationBox.getSelectedItem();
         animations.removeAllElements();
         boolean sawLast = selectedItem == null;
+
+        // 콤보박스 모델 구성
         if ( allowUnanimated || ( mdlDisp.getModel().getAnims().size() == 0 ) ) {
             animations.addElement( null );
         }
@@ -109,10 +112,12 @@ public class AnimationViewer extends JPanel {
                 sawLast = true;
             }
         }
+
         perspectiveViewport.reloadTextures();
         if ( sawLast && ( ( selectedItem != null ) || allowUnanimated ) ) {
             animationBox.setSelectedItem( selectedItem );
-        } else if ( !allowUnanimated && ( mdlDisp.getModel().getAnims().size() > 0 ) ) {
+        } 
+        else if ( !allowUnanimated && ( mdlDisp.getModel().getAnims().size() > 0 ) ) {
             animationBox.setSelectedItem( mdlDisp.getModel().getAnim( 0 ) );
         }
     }
