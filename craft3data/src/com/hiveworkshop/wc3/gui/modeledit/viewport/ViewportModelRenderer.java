@@ -38,6 +38,9 @@ import com.hiveworkshop.wc3.mdl.v2.MaterialView;
 import com.hiveworkshop.wc3.mdl.v2.ModelView;
 import com.hiveworkshop.wc3.mdl.v2.visitor.VertexVisitor;
 
+/**
+ * 모델 렌더링을 담당하는 클래스. 방문자 패턴을 사용하여 모델을 렌더링한다.
+ */
 public class ViewportModelRenderer implements ModelRenderer {
 	private Graphics2D graphics;
 	private ProgramPreferences programPreferences;

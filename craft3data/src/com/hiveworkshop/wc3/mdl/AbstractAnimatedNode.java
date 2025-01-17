@@ -14,6 +14,9 @@ import com.hiveworkshop.wc3.gui.modeledit.newstuff.actions.animation.AddKeyframe
 import com.hiveworkshop.wc3.mdl.render3d.RenderModel;
 import com.hiveworkshop.wc3.mdl.render3d.RenderNode;
 
+/**
+ * 애니메이션 키프레임을 생성하고 수정하는 추상 클래스
+ */
 public abstract class AbstractAnimatedNode implements AnimatedNode {
 
     private static final Vector4f   translationHeap     = new Vector4f();
