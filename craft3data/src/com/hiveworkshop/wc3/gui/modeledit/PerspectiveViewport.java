@@ -101,6 +101,7 @@ public class PerspectiveViewport extends BetterAWTGLCanvas
 {
     private static final float NORMAL_RENDER_LENGTH = AnimatedPerspectiveViewport.NORMAL_RENDER_LENGTH;
     public static final boolean LOG_EXCEPTIONS = true;
+    
     ModelView modelView;
     Matrix4f matrixHeap = new Matrix4f();
     Point lastClick;

@@ -9,7 +9,8 @@ import com.hiveworkshop.wc3.mdl.GeosetVertexBoneLink;
  */
 public interface TriangleVisitor {
 
-    VertexVisitor vertex( double x, double y, double z, double normalX, double normalY, double normalZ,
+    VertexVisitor vertex( double x, double y, double z, 
+            double normalX, double normalY, double normalZ,
             List<GeosetVertexBoneLink> bones );
 
     void triangleFinished();

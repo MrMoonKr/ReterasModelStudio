@@ -1516,6 +1516,7 @@ public class NGGLDP {
 	}
 
 	public static interface Pipeline {
+        
 		void glBegin(int type);
 
 		void onGlobalPipelineSet();

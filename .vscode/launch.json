@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "YseraPanel",
+            "request": "launch",
+            "mainClass": "ysera.YseraPanel",
+            "projectName": "retera-jwc3-matrixeater"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

@@ -61,4 +61,11 @@ public class YseraPanel extends JPanel {
 
 		return jMenuBar;
 	}
+
+    public static void main(final String[] args) {
+        final YseraPanel yseraPanel = new YseraPanel();
+        final JMenuBar jMenuBar = yseraPanel.createJMenuBar();
+        yseraPanel.add(BorderLayout.NORTH, jMenuBar);
+        //JOptionPane.showMessageDialog(null, yseraPanel);
+    }
 }
